@@ -1,25 +1,65 @@
+/* =========================================
+   LAYOUT: SIDEBARS
+   Left (Layers) and Right (Properties) Panels
+   ========================================= */
+
 .sidebar {
     width: 240px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #f4f4f4;
+
+    /* ✅ Theme Update: Dark Slate Background */
+    background: var(--bg-panel);
+
+    /* Ensure text is readable on dark background */
+    color: var(--text-main);
+    font-size: 14px;
 }
 
+/* --- Left Sidebar (Layers) --- */
 .sidebar-left {
-    border-right: 1px solid #ddd;
+    /* ✅ Theme Update: Subtle Dark Border */
+    border-right: 1px solid var(--border-color);
 
-    .layers-list li.active {
-        background: #e6f0ff;
-        border-color: #4a90e2;
+    /* Layers List Styling */
+    .layers-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow-y: auto;
+
+        li {
+            padding: 10px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+
+            &:hover {
+                /* Slightly lighter on hover */
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            &.active {
+                /* ✅ Theme Update: Blue Transparent Highlight */
+                background: var(--active-item-bg);
+                border-left: 3px solid var(--primary);
+                color: #ffffff;
+            }
+        }
     }
 }
 
+/* --- Right Sidebar (Properties) --- */
 .sidebar-right {
-    border-left: 1px solid #ddd;
+    /* ✅ Theme Update: Subtle Dark Border */
+    border-left: 1px solid var(--border-color);
+    padding: 0;
 
+    /* Utility class for hiding empty states/forms */
     .hidden {
-        display: none;
+        display: none !important;
     }
-
 }

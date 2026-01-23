@@ -1,23 +1,30 @@
-/* ================= PROPERTIES PANEL (PRO UI) ================= */
+/* =========================================
+   COMPONENT: PROPERTIES PANEL
+   The right-side form for editing values
+   ========================================= */
+
 .properties-panel {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #fff;
+
+    /* ✅ Theme Update: Dark Slate Background */
+    background: var(--bg-panel);
     font-family: 'Inter', sans-serif;
 
     /* --- HEADER --- */
     .panel-header {
         padding: 16px;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--border-color);
 
         h3 {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            color: #888;
+            color: var(--text-muted);
+            /* Muted text for labels */
             margin: 0;
         }
     }
@@ -26,7 +33,7 @@
     .empty-state {
         padding: 40px 20px;
         text-align: center;
-        color: #aaa;
+        color: var(--text-muted);
         font-size: 13px;
         font-style: italic;
     }
@@ -42,7 +49,8 @@
         .section-label {
             font-size: 11px;
             font-weight: 600;
-            color: #333;
+            color: var(--text-main);
+            /* Bright text for titles */
             margin-bottom: 4px;
             margin-top: 4px;
         }
@@ -50,7 +58,7 @@
         /* Divider Line */
         .separator {
             height: 1px;
-            background: #f0f0f0;
+            background: var(--border-color);
             margin: 8px 0;
             width: 100%;
         }
@@ -72,7 +80,7 @@
                 position: absolute;
                 left: 10px;
                 font-size: 11px;
-                color: #999;
+                color: var(--text-muted);
                 font-weight: 600;
                 pointer-events: none;
                 z-index: 2;
@@ -81,11 +89,14 @@
             input[type="number"] {
                 width: 100%;
                 padding: 6px 6px 6px 28px;
-                background: #f7f7f7;
-                border: 1px solid transparent;
+
+                /* Dark Input Fields */
+                background: rgba(0, 0, 0, 0.2);
+                border: 1px solid var(--border-color);
+
                 border-radius: 6px;
                 font-size: 13px;
-                color: #333;
+                color: var(--text-main);
                 font-weight: 500;
                 transition: all 0.2s ease;
                 -moz-appearance: textfield;
@@ -97,15 +108,15 @@
                 }
 
                 &:hover {
-                    background: #f0f0f0;
-                    border-color: #ddd;
+                    border-color: #64748b;
+                    /* Slate-500 */
                 }
 
                 &:focus {
-                    background: #fff;
-                    border-color: #4a90e2;
+                    background: rgba(0, 0, 0, 0.4);
+                    border-color: var(--primary);
                     outline: none;
-                    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
                 }
             }
         }
@@ -118,28 +129,28 @@
 
             label {
                 font-size: 12px;
-                color: #666;
+                color: var(--text-muted);
             }
 
             .color-input-wrapper {
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                background: #f7f7f7;
+                background: rgba(0, 0, 0, 0.2);
                 padding: 4px 8px 4px 4px;
                 border-radius: 6px;
-                border: 1px solid transparent;
+                border: 1px solid var(--border-color);
                 cursor: pointer;
                 transition: all 0.2s;
 
                 &:hover {
-                    background: #f0f0f0;
-                    border-color: #ddd;
+                    background: rgba(0, 0, 0, 0.3);
+                    border-color: #64748b;
                 }
 
                 .color-value-text {
                     font-size: 12px;
-                    color: #555;
+                    color: var(--text-main);
                     font-family: monospace;
                 }
 
@@ -158,19 +169,19 @@
                     }
 
                     &::-webkit-color-swatch {
-                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border: 1px solid rgba(255, 255, 255, 0.2);
                         border-radius: 4px;
                     }
 
                     &::-moz-color-swatch {
-                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border: 1px solid rgba(255, 255, 255, 0.2);
                         border-radius: 4px;
                     }
                 }
             }
         }
 
-        /* --- ACTION BUTTONS (Corrected placement) --- */
+        /* --- ACTION BUTTONS --- */
         .action-buttons {
             display: flex;
             flex-direction: column;
@@ -189,23 +200,24 @@
             }
 
             .btn-primary {
-                background-color: #4a90e2;
+                background-color: var(--primary);
                 color: white;
-                border: 1px solid #357abd;
+                border: 1px solid transparent;
 
                 &:hover {
-                    background-color: #357abd;
+                    background-color: var(--primary-hover);
                 }
             }
 
             .btn-secondary {
-                background-color: #fff;
-                color: #333;
-                border: 1px solid #ccc;
+                /* Dark Theme Secondary Button */
+                background-color: transparent;
+                color: var(--text-main);
+                border: 1px solid var(--border-color);
 
                 &:hover {
-                    background-color: #f4f4f4;
-                    border-color: #bbb;
+                    background-color: rgba(255, 255, 255, 0.05);
+                    border-color: #64748b;
                 }
             }
         }

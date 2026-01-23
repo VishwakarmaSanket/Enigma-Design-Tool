@@ -1,23 +1,33 @@
-/* ================= LAYERS PANEL (PRO UI) ================= */
+/* =========================================
+   COMPONENT: LAYERS PANEL
+   The list of elements on the left side
+   ========================================= */
+
 .layers-panel {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: #fff;
+
+    /* ✅ Theme Update: Dark Slate Background */
+    background: var(--bg-panel);
     font-family: 'Inter', sans-serif;
 
-    /* --- HEADER (Matches Properties Panel) --- */
+    /* --- HEADER --- */
     h3 {
         font-size: 11px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.8px;
-        color: #888;
+
+        /* Muted Text Color */
+        color: var(--text-muted);
+
         padding: 16px;
         margin: 0;
-        border-bottom: 1px solid #f0f0f0;
-        background-color: #fff;
-        /* or #fafafa for slight contrast */
+
+        /* Dark Border & Background */
+        border-bottom: 1px solid var(--border-color);
+        background-color: var(--bg-panel);
     }
 
     /* --- SCROLLABLE LIST --- */
@@ -27,13 +37,18 @@
         padding: 0;
         margin: 0;
 
-        /* Scrollbar Styling (Optional: for Chrome/Webkit) */
+        /* Scrollbar Styling (Dark Theme) */
         &::-webkit-scrollbar {
             width: 6px;
         }
 
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
         &::-webkit-scrollbar-thumb {
-            background: #e0e0e0;
+            background: #475569;
+            /* Slate-600 */
             border-radius: 3px;
         }
 
@@ -43,9 +58,14 @@
             align-items: center;
             padding: 10px 16px;
             font-size: 13px;
-            color: #333;
+
+            /* Bright Text for Readability */
+            color: var(--text-main);
             font-weight: 500;
-            border-bottom: 1px solid #f7f7f7;
+
+            /* Subtle Dark Separator */
+            border-bottom: 1px solid var(--border-color);
+
             cursor: pointer;
             transition: all 0.1s ease-in-out;
             border-left: 3px solid transparent;
@@ -53,36 +73,86 @@
 
             /* Hover State */
             &:hover {
-                background-color: #f9f9f9;
-                color: #000;
+                /* Subtle Light Overlay */
+                background-color: rgba(255, 255, 255, 0.05);
+                color: #fff;
             }
 
             /* --- ACTIVE / SELECTED STATE --- */
             &.active {
-                background-color: #e6f0ff;
-                /* Light Blue Background */
-                color: #007aff;
-                /* Blue Text */
-                border-left-color: #007aff;
+                /* Blue Transparent Background */
+                background-color: var(--active-item-bg);
+
+                /* White Text on Blue Background */
+                color: #ffffff;
+
                 /* Blue Accent Border */
+                border-left-color: var(--primary);
             }
 
-            /* Optional: Add a pseudo-element icon for shapes */
-            /* This adds a tiny gray box icon before the name */
+            /* Layer Icon (Small Box) */
+            /* ... inside .layers-panel .layers-list li ... */
+
+            /* --- DYNAMIC ICONS --- */
             &::before {
                 content: '';
                 display: inline-block;
-                width: 10px;
-                height: 10px;
-                border: 2px solid #ccc;
                 margin-right: 10px;
+                transition: all 0.2s;
+
+                /* Default: Rectangle */
+                width: 12px;
+                height: 12px;
+                border: 2px solid var(--text-muted);
                 border-radius: 2px;
-                transition: border-color 0.2s;
+                /* Square corners */
+                background: transparent;
             }
 
-            /* Active Icon Style */
+            /* 1. Circle Icon (For Ellipses) */
+            &.type-ellipse::before {
+                border-radius: 50%;
+                /* Make it round */
+            }
+
+            /* 2. Text Icon (The letter "T") */
+            &.type-text::before {
+                content: 'T';
+                /* Show letter T instead of box */
+                border: none;
+                width: 12px;
+                height: 12px;
+
+                font-size: 11px;
+                font-weight: 800;
+                line-height: 12px;
+                text-align: center;
+                color: var(--text-muted);
+            }
+
+            /* 3. Line Icon */
+            &.type-line::before {
+                height: 2px;
+                /* Flatten it */
+                border-radius: 0;
+                border: none;
+                background-color: var(--text-muted);
+                transform: rotate(-45deg);
+                /* Diagonal line */
+            }
+
+            /* --- ACTIVE STATE FOR ICONS --- */
             &.active::before {
-                border-color: #007aff;
+                border-color: var(--primary);
+            }
+
+            &.active.type-text::before {
+                color: var(--primary);
+                /* Blue "T" */
+            }
+
+            &.active.type-line::before {
+                background-color: var(--primary);
             }
         }
     }
@@ -93,7 +163,7 @@
         display: block;
         text-align: center;
         padding: 20px;
-        color: #aaa;
+        color: var(--text-muted);
         font-size: 13px;
         font-style: italic;
     }
