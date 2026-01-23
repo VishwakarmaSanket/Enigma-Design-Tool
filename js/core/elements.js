@@ -42,17 +42,16 @@ function renderProperties() {
     empty.classList.add("hidden");
     form.classList.remove("hidden");
 
-    // ✅ LINE TOOL POLISH: Change "Height" label to "Thickness"
-    const heightLabel = getEl('[data-label="height"]');
+    // Line Tool Label Fix
     const allLabels = document.querySelectorAll(".icon-label");
     allLabels.forEach((span) => {
       if (span.innerText === "H" || span.innerText === "T") {
-        span.innerText = element.type === "line" ? "T" : "H"; // T for Thickness
+        span.innerText = element.type === "line" ? "T" : "H";
         span.title = element.type === "line" ? "Thickness" : "Height";
       }
     });
 
-    // ✅ SMART TOGGLE: Text Options
+    // Toggle Text Options
     const textSections = document.querySelectorAll(".text-only");
     textSections.forEach((section) => {
       if (element.type === "text") section.classList.remove("hidden");
@@ -64,6 +63,12 @@ function renderProperties() {
       const el = getEl(sel);
       if (el && el !== document.activeElement) {
         el.value = val;
+
+        // ✅ NEW: If this is a color input, update the Hex Label next to it
+        if (el.type === "color") {
+          const label = el.parentElement.querySelector(".color-value-text");
+          if (label) label.innerText = val.toUpperCase();
+        }
       }
     };
 
@@ -103,6 +108,12 @@ function initPropertyListeners() {
       if (input.type === "number") {
         if (val === "") return;
         val = parseInt(val, 10);
+      }
+
+      // ✅ NEW: Sync Hex Label immediately while dragging color picker
+      if (input.type === "color") {
+        const label = input.parentElement.querySelector(".color-value-text");
+        if (label) label.innerText = val.toUpperCase();
       }
 
       element[key] = val;
@@ -195,7 +206,7 @@ function initKeyboardShortcuts() {
           (el) => el.id !== id,
         );
         clearSelection();
-        renderLayers(); // ✅ Fixed: Updates layers list
+        renderLayers();
         break;
       case "d":
       case "D":
@@ -209,15 +220,15 @@ function initKeyboardShortcuts() {
 }
 
 function duplicateElement(sourceElement) {
-  const newElement = { ...sourceElement }; // Copy data
-  newElement.id = generateID(); // New ID
-  newElement.x += 20; // Offset slightly
+  const newElement = { ...sourceElement };
+  newElement.id = generateID();
+  newElement.x += 20;
   newElement.y += 20;
 
   editorState.elements.push(newElement);
   renderElement(newElement);
   selectElement(newElement.id);
-  renderLayers(); // Update Layer List
+  renderLayers();
 }
 
 /* ===================== 3. EXPORT LOGIC ===================== */
@@ -295,7 +306,6 @@ if (canvas) {
   });
 }
 
-// Dragging Loop
 document.addEventListener("mousemove", (e) => {
   if (
     isResizing ||
@@ -349,7 +359,6 @@ function clearSelection() {
     .querySelectorAll(".toolbar .tool button")
     .forEach((btn) => btn.classList.remove("active"));
 
-  // Reset "T" label back to "H"
   document.querySelectorAll(".icon-label").forEach((span) => {
     if (span.innerText === "T") span.innerText = "H";
   });
@@ -374,19 +383,17 @@ function selectElement(id) {
     attachResizeLogic(h, id, pos);
   });
 
-  // Re-render layers to show selection highlight
   renderLayers();
   renderProperties();
 }
 
-/* ===================== NEW: CENTRALIZED LAYERS LOGIC ===================== */
+/* ===================== CENTRALIZED LAYERS LOGIC ===================== */
 function renderLayers() {
   const list = getEl(".layers-list");
   if (!list) return;
 
-  list.innerHTML = ""; // Clear list to prevent ghost layers
+  list.innerHTML = "";
 
-  // Reverse so top element is top of list
   editorState.elements
     .slice()
     .reverse()
@@ -398,7 +405,6 @@ function renderLayers() {
       li.innerText = `${typeLabel} ${realIndex + 1}`;
       li.dataset.id = el.id;
 
-      // ✅ FIX: Add class for CSS icons (type-ellipse, type-text, etc.)
       li.classList.add(`type-${el.type}`);
 
       if (el.id === editorState.selectedElementId) {
@@ -554,7 +560,6 @@ function renderElement(element) {
   div.dataset.id = element.id;
   canvas.appendChild(div);
 
-  // Text Editing
   if (element.type === "text") {
     div.addEventListener("dblclick", (e) => {
       e.stopPropagation();
@@ -578,7 +583,6 @@ function renderElement(element) {
     });
   }
 
-  // Dragging
   div.addEventListener("mousedown", (e) => {
     if (e.target.classList.contains("resize-handle")) return;
     if (div.isContentEditable) return;
@@ -620,11 +624,9 @@ function createElement(type) {
   editorState.elements.push(element);
   renderElement(element);
 
-  // ✅ FIX: Use central layers function
   selectElement(element.id);
   renderLayers();
 
-  // Highlight Tool
   document.querySelectorAll(".toolbar .tool button").forEach((btn) => {
     btn.classList.remove("active");
     if (btn.dataset.tool === type) btn.classList.add("active");

@@ -15,12 +15,13 @@
             <div class="layers-panel">
                 <h3>Layers</h3>
                 <ul class="layers-list">
-                    <!--Layers will be rendered here-->
                 </ul>
             </div>
         </aside>
+
         <main class="canvas-wrapper" aria-label="Design canvas">
             <div class="canvas"></div>
+
             <div class="toolbar">
                 <div class="tool">
                     <button data-tool="rectangle" aria-label="Rectangle">
@@ -64,6 +65,7 @@
                 </div>
             </div>
         </main>
+
         <aside class="sidebar sidebar-right">
             <div class="properties-panel">
                 <div class="panel-header">
@@ -108,35 +110,40 @@
                         </div>
                     </div>
 
+                    <div class="text-only hidden">
+                        <div class="separator"></div>
+                        <div class="section-label">Typography</div>
+
+                        <div class="row-group" style="margin-bottom: 12px;">
+                            <div class="input-wrapper">
+                                <span class="icon-label" style="font-size: 9px;">PX</span>
+                                <input type="number" data-prop="fontSize" value="16">
+                            </div>
+                            <div class="input-wrapper">
+                                <select data-prop="textAlign">
+                                    <option value="left">Left Align</option>
+                                    <option value="center">Center</option>
+                                    <option value="right">Right Align</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="color-row">
+                            <label>Color</label>
+                            <div class="color-input-wrapper">
+                                <span class="color-value-text">#333333</span>
+                                <input type="color" data-prop="color" value="#333333">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="separator"></div>
-
-                    <div class="section-label text-only hidden">Typography</div>
-
-                    <div class="row-group text-only hidden">
-                        <div class="input-wrapper">
-                            <span class="icon-label" style="font-size: 9px;">PX</span>
-                            <input type="number" data-prop="fontSize" min="8" max="200">
-                        </div>
-                        <div class="color-input-wrapper" style="flex: 1;">
-                            <input type="color" data-prop="color" value="#333333">
-                        </div>
-                    </div>
-
-                    <div class="row-group text-only hidden" style="margin-top: 8px;">
-                        <select data-prop="textAlign"
-                            style="width: 100%; padding: 6px; border-radius: 6px; border: 1px solid #ddd;">
-                            <option value="left">Left Align</option>
-                            <option value="center">Center</option>
-                            <option value="right">Right Align</option>
-                        </select>
-                    </div>
-
-                    <div class="separator text-only hidden"></div>
 
                     <div class="section-label">Appearance</div>
                     <div class="prop-row color-row">
                         <label>Fill</label>
                         <div class="color-input-wrapper">
+                            <span class="color-value-text">#4A90E2</span>
                             <input type="color" data-prop="backgroundColor" value="#4a90e2">
                         </div>
                     </div>
