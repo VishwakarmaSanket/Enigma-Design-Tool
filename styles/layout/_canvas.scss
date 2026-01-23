@@ -2,6 +2,55 @@
    LAYOUT: CANVAS
    The main drawing area and element interaction
    ========================================= */
+/* ... (Existing canvas styles) ... */
+
+/* =========================================
+   COMPONENT: APP HEADER (Floating)
+   Top-Center Branding
+   ========================================= */
+.app-header {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+
+    /* Matches Toolbar Style */
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    /* Logo Image */
+    img {
+        width: 20px;
+        height: 20px;
+        display: block;
+        border-radius: 4px;
+    }
+
+    /* App Name */
+    span {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--text-main);
+        letter-spacing: -0.3px;
+    }
+
+    /* Optional: File Name Tag (lighter text) */
+    .file-tag {
+        font-weight: 400;
+        color: var(--text-muted);
+        padding-left: 8px;
+        border-left: 1px solid var(--border-color);
+    }
+}
+
 
 .canvas-wrapper {
     flex: 1;

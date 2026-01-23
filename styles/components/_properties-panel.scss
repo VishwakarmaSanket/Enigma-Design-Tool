@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
 
-    /* ✅ Theme Update: Dark Slate Background */
+    /* Dark Slate Background */
     background: var(--bg-panel);
     font-family: 'Inter', sans-serif;
 
@@ -24,7 +24,6 @@
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: var(--text-muted);
-            /* Muted text for labels */
             margin: 0;
         }
     }
@@ -50,7 +49,6 @@
             font-size: 11px;
             font-weight: 600;
             color: var(--text-main);
-            /* Bright text for titles */
             margin-bottom: 4px;
             margin-top: 4px;
         }
@@ -86,9 +84,11 @@
                 z-index: 2;
             }
 
+            /* STANDARD NUMBER INPUTS */
             input[type="number"] {
                 width: 100%;
                 padding: 6px 6px 6px 28px;
+                /* Room for label */
 
                 /* Dark Input Fields */
                 background: rgba(0, 0, 0, 0.2);
@@ -172,13 +172,54 @@
                         border: 1px solid rgba(255, 255, 255, 0.2);
                         border-radius: 4px;
                     }
-
-                    &::-moz-color-swatch {
-                        border: 1px solid rgba(255, 255, 255, 0.2);
-                        border-radius: 4px;
-                    }
                 }
             }
+        }
+
+        /* =========================================
+           ✅ NEW: TYPOGRAPHY FIXES (DARK THEME) 
+           ========================================= */
+
+        /* 1. Alignment Dropdown (<select>) */
+        select {
+            width: 100%;
+            padding: 8px 12px;
+
+            /* Dark Background */
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+
+            /* Remove default browser arrow and use custom styling if needed, 
+               but standard dark scrollbar is usually fine. */
+
+            &:hover {
+                border-color: #64748b;
+            }
+
+            &:focus {
+                border-color: var(--primary);
+            }
+
+            /* Dropdown Options (Dark Mode) */
+            option {
+                background-color: var(--bg-panel);
+                color: var(--text-main);
+            }
+        }
+
+        /* 2. Text Color Picker (Small Box) */
+        input[type="color"] {
+            background: transparent;
+            border: none;
+            height: 32px;
+            width: 100%;
+            cursor: pointer;
         }
 
         /* --- ACTION BUTTONS --- */
@@ -210,7 +251,6 @@
             }
 
             .btn-secondary {
-                /* Dark Theme Secondary Button */
                 background-color: transparent;
                 color: var(--text-main);
                 border: 1px solid var(--border-color);

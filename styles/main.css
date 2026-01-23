@@ -1,8 +1,10 @@
 @charset "UTF-8";
+
 @font-face {
   font-family: Inter;
   src: url(../fonts/Inter_24pt-Regular.ttf);
 }
+
 html,
 body {
   height: 100%;
@@ -30,51 +32,123 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* ✅ Theme Update: Dark Slate Background */
   background: var(--bg-panel);
-  /* Ensure text is readable on dark background */
   color: var(--text-main);
+  font-family: "Inter", sans-serif;
   font-size: 14px;
 }
 
 /* --- Left Sidebar (Layers) --- */
 .sidebar-left {
-  /* ✅ Theme Update: Subtle Dark Border */
   border-right: 1px solid var(--border-color);
-  /* Layers List Styling */
+  /* Clean Flex container for the list */
 }
-.sidebar-left .layers-list {
-  list-style: none;
+
+.sidebar-left .layers-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-panel);
+  /* Header matching Properties Panel */
+}
+
+.sidebar-left .layers-panel h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  padding: 16px;
+  margin: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-left .layers-panel .layers-list {
+  flex: 1;
+  overflow-y: auto;
   padding: 0;
   margin: 0;
-  overflow-y: auto;
 }
-.sidebar-left .layers-list li {
-  padding: 10px 16px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--border-color);
-  transition: background 0.2s;
+
+.sidebar-left .layers-panel .layers-list li {
   display: flex;
   align-items: center;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-main);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  /* Icons */
+  /* Dynamic Icon Types */
+  /* Active Icons */
 }
-.sidebar-left .layers-list li:hover {
-  /* Slightly lighter on hover */
-  background: rgba(255, 255, 255, 0.05);
+
+.sidebar-left .layers-panel .layers-list li:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
-.sidebar-left .layers-list li.active {
-  /* ✅ Theme Update: Blue Transparent Highlight */
-  background: var(--active-item-bg);
-  border-left: 3px solid var(--primary);
+
+.sidebar-left .layers-panel .layers-list li.active {
+  background-color: var(--active-item-bg);
   color: #ffffff;
+  border-left-color: var(--primary);
+}
+
+.sidebar-left .layers-panel .layers-list li::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--text-muted);
+  margin-right: 10px;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.sidebar-left .layers-panel .layers-list li.type-ellipse::before {
+  border-radius: 50%;
+}
+
+.sidebar-left .layers-panel .layers-list li.type-text::before {
+  content: "T";
+  border: none;
+  font-weight: 800;
+  text-align: center;
+  font-size: 11px;
+  line-height: 12px;
+  color: var(--text-muted);
+}
+
+.sidebar-left .layers-panel .layers-list li.type-line::before {
+  height: 2px;
+  border: none;
+  background-color: var(--text-muted);
+  border-radius: 0;
+  transform: rotate(-45deg);
+}
+
+.sidebar-left .layers-panel .layers-list li.active::before {
+  border-color: #ffffff;
+  background: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.sidebar-left .layers-panel .layers-list li.active.type-text::before {
+  color: var(--primary);
+  background: transparent;
+}
+
+.sidebar-left .layers-panel .layers-list li.active.type-line::before {
+  background-color: var(--primary);
 }
 
 /* --- Right Sidebar (Properties) --- */
 .sidebar-right {
-  /* ✅ Theme Update: Subtle Dark Border */
   border-left: 1px solid var(--border-color);
   padding: 0;
-  /* Utility class for hiding empty states/forms */
 }
+
 .sidebar-right .hidden {
   display: none !important;
 }
@@ -83,6 +157,52 @@ body {
    LAYOUT: CANVAS
    The main drawing area and element interaction
    ========================================= */
+/* ... (Existing canvas styles) ... */
+/* =========================================
+   COMPONENT: APP HEADER (Floating)
+   Top-Center Branding
+   ========================================= */
+.app-header {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  /* Matches Toolbar Style */
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  /* Logo Image */
+  /* App Name */
+  /* Optional: File Name Tag (lighter text) */
+}
+
+.app-header img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  border-radius: 4px;
+}
+
+.app-header span {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+}
+
+.app-header .file-tag {
+  font-weight: 400;
+  color: var(--text-muted);
+  padding-left: 8px;
+  border-left: 1px solid var(--border-color);
+}
+
 .canvas-wrapper {
   flex: 1;
   height: 100%;
@@ -96,6 +216,7 @@ body {
   background-size: 20px 20px;
   /* The White "Paper" */
 }
+
 .canvas-wrapper .canvas {
   position: relative;
   width: 800px;
@@ -109,24 +230,27 @@ body {
   overflow: visible;
   /* ================= SHAPES ================= */
 }
-.canvas-wrapper .canvas > div {
+
+.canvas-wrapper .canvas>div {
   position: absolute;
   box-sizing: border-box;
   cursor: grab;
   z-index: 10;
   -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: visible !important;
   /* ================= SELECTED STATE ================= */
 }
-.canvas-wrapper .canvas > div:active {
+
+.canvas-wrapper .canvas>div:active {
   cursor: grabbing;
 }
-.canvas-wrapper .canvas > div.selected {
+
+.canvas-wrapper .canvas>div.selected {
   z-index: 20;
   /* Pink/Reddish Dashed Selection Outline */
   outline: 2px dashed #ea758b;
@@ -136,7 +260,8 @@ body {
   /* 3. Positioning (Centered on Corner) */
   /* Offset = -7px (half of 14px width) to center it */
 }
-.canvas-wrapper .canvas > div.selected .resize-handle {
+
+.canvas-wrapper .canvas>div.selected .resize-handle {
   /* 1. Visual Style */
   width: 14px;
   height: 14px;
@@ -156,7 +281,8 @@ body {
   /* 2. INVISIBLE HIT AREA (Magic UX Fix) */
   /* Creates a larger click zone around the small visual handle */
 }
-.canvas-wrapper .canvas > div.selected .resize-handle::after {
+
+.canvas-wrapper .canvas>div.selected .resize-handle::after {
   content: "";
   position: absolute;
   top: -10px;
@@ -165,22 +291,26 @@ body {
   bottom: -10px;
   border-radius: 50%;
 }
-.canvas-wrapper .canvas > div.selected .resize-handle.top-left {
+
+.canvas-wrapper .canvas>div.selected .resize-handle.top-left {
   top: -7px;
   left: -7px;
   cursor: nwse-resize;
 }
-.canvas-wrapper .canvas > div.selected .resize-handle.top-right {
+
+.canvas-wrapper .canvas>div.selected .resize-handle.top-right {
   top: -7px;
   right: -7px;
   cursor: nesw-resize;
 }
-.canvas-wrapper .canvas > div.selected .resize-handle.bottom-left {
+
+.canvas-wrapper .canvas>div.selected .resize-handle.bottom-left {
   bottom: -7px;
   left: -7px;
   cursor: nesw-resize;
 }
-.canvas-wrapper .canvas > div.selected .resize-handle.bottom-right {
+
+.canvas-wrapper .canvas>div.selected .resize-handle.bottom-right {
   bottom: -7px;
   right: -7px;
   cursor: nwse-resize;
@@ -208,12 +338,14 @@ body {
   /* Strong shadow to lift it off the canvas */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
 .toolbar .tool {
   position: relative;
   display: flex;
   justify-content: center;
   /* --- TOOLTIP --- */
 }
+
 .toolbar .tool button {
   display: flex;
   align-items: center;
@@ -222,8 +354,8 @@ body {
   height: 40px;
   padding: 0;
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -235,23 +367,27 @@ body {
   /* Hover State */
   /* Active State */
 }
+
 .toolbar .tool button svg {
   display: block;
   /* 'currentColor' allows SVG to take the text color */
   stroke: currentColor;
 }
+
 .toolbar .tool button:hover {
   /* Slightly lighter background */
   background-color: rgba(255, 255, 255, 0.1);
   /* Brighter icon on hover */
   color: var(--text-main);
 }
+
 .toolbar .tool button.active {
   /* Blue Transparent BG */
   background-color: var(--active-item-bg);
   /* Enigma Blue Icon */
   color: var(--primary);
 }
+
 .toolbar .tool h3 {
   position: absolute;
   bottom: 100%;
@@ -272,6 +408,7 @@ body {
   visibility: hidden;
   transition: opacity 0.2s, transform 0.2s;
 }
+
 .toolbar .tool h3::after {
   content: "";
   position: absolute;
@@ -281,6 +418,7 @@ body {
   border: 4px solid transparent;
   border-top-color: #000;
 }
+
 .toolbar .tool:hover h3 {
   opacity: 1;
   visibility: visible;
@@ -302,6 +440,7 @@ body {
   /* --- SCROLLABLE LIST --- */
   /* Optional: Empty State for Layers */
 }
+
 .layers-panel h3 {
   font-size: 11px;
   font-weight: 700;
@@ -315,6 +454,7 @@ body {
   border-bottom: 1px solid var(--border-color);
   background-color: var(--bg-panel);
 }
+
 .layers-panel .layers-list {
   flex: 1;
   overflow-y: auto;
@@ -323,17 +463,21 @@ body {
   /* Scrollbar Styling (Dark Theme) */
   /* --- LAYER ITEM --- */
 }
+
 .layers-panel .layers-list::-webkit-scrollbar {
   width: 6px;
 }
+
 .layers-panel .layers-list::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.1);
 }
+
 .layers-panel .layers-list::-webkit-scrollbar-thumb {
   background: #475569;
   /* Slate-600 */
   border-radius: 3px;
 }
+
 .layers-panel .layers-list li {
   display: flex;
   align-items: center;
@@ -358,11 +502,13 @@ body {
   /* 3. Line Icon */
   /* --- ACTIVE STATE FOR ICONS --- */
 }
+
 .layers-panel .layers-list li:hover {
   /* Subtle Light Overlay */
   background-color: rgba(255, 255, 255, 0.05);
   color: #fff;
 }
+
 .layers-panel .layers-list li.active {
   /* Blue Transparent Background */
   background-color: var(--active-item-bg);
@@ -371,6 +517,7 @@ body {
   /* Blue Accent Border */
   border-left-color: var(--primary);
 }
+
 .layers-panel .layers-list li::before {
   content: "";
   display: inline-block;
@@ -384,10 +531,12 @@ body {
   /* Square corners */
   background: transparent;
 }
+
 .layers-panel .layers-list li.type-ellipse::before {
   border-radius: 50%;
   /* Make it round */
 }
+
 .layers-panel .layers-list li.type-text::before {
   content: "T";
   /* Show letter T instead of box */
@@ -400,6 +549,7 @@ body {
   text-align: center;
   color: var(--text-muted);
 }
+
 .layers-panel .layers-list li.type-line::before {
   height: 2px;
   /* Flatten it */
@@ -409,16 +559,20 @@ body {
   transform: rotate(-45deg);
   /* Diagonal line */
 }
+
 .layers-panel .layers-list li.active::before {
   border-color: var(--primary);
 }
+
 .layers-panel .layers-list li.active.type-text::before {
   color: var(--primary);
   /* Blue "T" */
 }
+
 .layers-panel .layers-list li.active.type-line::before {
   background-color: var(--primary);
 }
+
 .layers-panel:empty::after {
   content: "No layers";
   display: block;
@@ -438,26 +592,28 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* ✅ Theme Update: Dark Slate Background */
+  /* Dark Slate Background */
   background: var(--bg-panel);
   font-family: "Inter", sans-serif;
   /* --- HEADER --- */
   /* --- EMPTY STATE --- */
   /* --- FORM LAYOUT --- */
 }
+
 .properties-panel .panel-header {
   padding: 16px;
   border-bottom: 1px solid var(--border-color);
 }
+
 .properties-panel .panel-header h3 {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: var(--text-muted);
-  /* Muted text for labels */
   margin: 0;
 }
+
 .properties-panel .empty-state {
   padding: 40px 20px;
   text-align: center;
@@ -465,6 +621,7 @@ body {
   font-size: 13px;
   font-style: italic;
 }
+
 .properties-panel .properties-form {
   padding: 16px;
   display: flex;
@@ -475,32 +632,42 @@ body {
   /* Grid for X/Y and W/H inputs */
   /* Wrapper for Inputs */
   /* --- COLOR PICKER ROW --- */
+  /* =========================================
+     ✅ NEW: TYPOGRAPHY FIXES (DARK THEME) 
+     ========================================= */
+  /* 1. Alignment Dropdown (<select>) */
+  /* 2. Text Color Picker (Small Box) */
   /* --- ACTION BUTTONS --- */
 }
+
 .properties-panel .properties-form .section-label {
   font-size: 11px;
   font-weight: 600;
   color: var(--text-main);
-  /* Bright text for titles */
   margin-bottom: 4px;
   margin-top: 4px;
 }
+
 .properties-panel .properties-form .separator {
   height: 1px;
   background: var(--border-color);
   margin: 8px 0;
   width: 100%;
 }
+
 .properties-panel .properties-form .row-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+
 .properties-panel .properties-form .input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  /* STANDARD NUMBER INPUTS */
 }
+
 .properties-panel .properties-form .input-wrapper .icon-label {
   position: absolute;
   left: 10px;
@@ -510,9 +677,11 @@ body {
   pointer-events: none;
   z-index: 2;
 }
+
 .properties-panel .properties-form .input-wrapper input[type=number] {
   width: 100%;
   padding: 6px 6px 6px 28px;
+  /* Room for label */
   /* Dark Input Fields */
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-color);
@@ -523,29 +692,36 @@ body {
   transition: all 0.2s ease;
   -moz-appearance: textfield;
 }
-.properties-panel .properties-form .input-wrapper input[type=number]::-webkit-inner-spin-button, .properties-panel .properties-form .input-wrapper input[type=number]::-webkit-outer-spin-button {
+
+.properties-panel .properties-form .input-wrapper input[type=number]::-webkit-inner-spin-button,
+.properties-panel .properties-form .input-wrapper input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 .properties-panel .properties-form .input-wrapper input[type=number]:hover {
   border-color: #64748b;
   /* Slate-500 */
 }
+
 .properties-panel .properties-form .input-wrapper input[type=number]:focus {
   background: rgba(0, 0, 0, 0.4);
   border-color: var(--primary);
   outline: none;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
+
 .properties-panel .properties-form .color-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .properties-panel .properties-form .color-row label {
   font-size: 12px;
   color: var(--text-muted);
 }
+
 .properties-panel .properties-form .color-row .color-input-wrapper {
   display: flex;
   align-items: center;
@@ -557,19 +733,22 @@ body {
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .properties-panel .properties-form .color-row .color-input-wrapper:hover {
   background: rgba(0, 0, 0, 0.3);
   border-color: #64748b;
 }
+
 .properties-panel .properties-form .color-row .color-input-wrapper .color-value-text {
   font-size: 12px;
   color: var(--text-main);
   font-family: monospace;
 }
+
 .properties-panel .properties-form .color-row .color-input-wrapper input[type=color] {
   -webkit-appearance: none;
   -moz-appearance: none;
-       appearance: none;
+  appearance: none;
   border: none;
   background: none;
   width: 24px;
@@ -577,23 +756,60 @@ body {
   cursor: pointer;
   padding: 0;
 }
+
 .properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-webkit-color-swatch-wrapper {
   padding: 0;
 }
+
 .properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-webkit-color-swatch {
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
-.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-moz-color-swatch {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+
+.properties-panel .properties-form select {
+  width: 100%;
+  padding: 8px 12px;
+  /* Dark Background */
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  /* Remove default browser arrow and use custom styling if needed, 
+     but standard dark scrollbar is usually fine. */
+  /* Dropdown Options (Dark Mode) */
 }
+
+.properties-panel .properties-form select:hover {
+  border-color: #64748b;
+}
+
+.properties-panel .properties-form select:focus {
+  border-color: var(--primary);
+}
+
+.properties-panel .properties-form select option {
+  background-color: var(--bg-panel);
+  color: var(--text-main);
+}
+
+.properties-panel .properties-form input[type=color] {
+  background: transparent;
+  border: none;
+  height: 32px;
+  width: 100%;
+  cursor: pointer;
+}
+
 .properties-panel .properties-form .action-buttons {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 10px;
 }
+
 .properties-panel .properties-form .action-buttons button {
   width: 100%;
   padding: 8px 12px;
@@ -604,20 +820,23 @@ body {
   transition: all 0.2s;
   font-family: "Inter", sans-serif;
 }
+
 .properties-panel .properties-form .action-buttons .btn-primary {
   background-color: var(--primary);
   color: white;
   border: 1px solid transparent;
 }
+
 .properties-panel .properties-form .action-buttons .btn-primary:hover {
   background-color: var(--primary-hover);
 }
+
 .properties-panel .properties-form .action-buttons .btn-secondary {
-  /* Dark Theme Secondary Button */
   background-color: transparent;
   color: var(--text-main);
   border: 1px solid var(--border-color);
 }
+
 .properties-panel .properties-form .action-buttons .btn-secondary:hover {
   background-color: rgba(255, 255, 255, 0.05);
   border-color: #64748b;
@@ -649,4 +868,6 @@ body {
   --header-height: 50px;
   --sidebar-width: 240px;
   --layers-panel-width: 200px;
-}/*# sourceMappingURL=main.css.map */
+}
+
+/*# sourceMappingURL=main.css.map */

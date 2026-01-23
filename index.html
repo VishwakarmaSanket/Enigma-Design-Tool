@@ -20,6 +20,13 @@
         </aside>
 
         <main class="canvas-wrapper" aria-label="Design canvas">
+
+            <div class="app-header">
+                <img src="favicon.svg" alt="Logo">
+                <span>Enigma</span>
+                <span class="file-tag">Untitled</span>
+            </div>
+
             <div class="canvas"></div>
 
             <div class="toolbar">
@@ -32,7 +39,6 @@
                     </button>
                     <h3>Rectangle</h3>
                 </div>
-
                 <div class="tool">
                     <button data-tool="ellipse" aria-label="Ellipse">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -42,7 +48,6 @@
                     </button>
                     <h3>Ellipse</h3>
                 </div>
-
                 <div class="tool">
                     <button data-tool="line" aria-label="Line">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -52,7 +57,6 @@
                     </button>
                     <h3>Line</h3>
                 </div>
-
                 <div class="tool">
                     <button data-tool="text" aria-label="Text">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -71,15 +75,11 @@
                 <div class="panel-header">
                     <h3>Properties</h3>
                 </div>
-
                 <div class="empty-state">
                     <p>Select an element to edit</p>
                 </div>
-
                 <div class="properties-form hidden">
-
                     <div class="section-label">Transform</div>
-
                     <div class="row-group">
                         <div class="input-wrapper">
                             <span class="icon-label">X</span>
@@ -90,7 +90,6 @@
                             <input type="number" data-prop="y">
                         </div>
                     </div>
-
                     <div class="row-group">
                         <div class="input-wrapper">
                             <span class="icon-label">W</span>
@@ -113,7 +112,6 @@
                     <div class="text-only hidden">
                         <div class="separator"></div>
                         <div class="section-label">Typography</div>
-
                         <div class="row-group" style="margin-bottom: 12px;">
                             <div class="input-wrapper">
                                 <span class="icon-label" style="font-size: 9px;">PX</span>
@@ -127,7 +125,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="color-row">
                             <label>Color</label>
                             <div class="color-input-wrapper">
