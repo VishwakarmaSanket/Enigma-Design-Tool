@@ -42,14 +42,24 @@ function renderProperties() {
     empty.classList.add("hidden");
     form.classList.remove("hidden");
 
-    // ✅ SMART TOGGLE: Only show Typography inputs if it's Text
+    // ✅ LINE TOOL POLISH: Change "Height" label to "Thickness"
+    const heightLabel = getEl('[data-label="height"]');
+    const allLabels = document.querySelectorAll(".icon-label");
+    allLabels.forEach((span) => {
+      if (span.innerText === "H" || span.innerText === "T") {
+        span.innerText = element.type === "line" ? "T" : "H"; // T for Thickness
+        span.title = element.type === "line" ? "Thickness" : "Height";
+      }
+    });
+
+    // ✅ SMART TOGGLE: Text Options
     const textSections = document.querySelectorAll(".text-only");
     textSections.forEach((section) => {
       if (element.type === "text") section.classList.remove("hidden");
       else section.classList.add("hidden");
     });
 
-    // C. Update Inputs (Safe Update)
+    // C. Update Inputs
     const setVal = (sel, val) => {
       const el = getEl(sel);
       if (el && el !== document.activeElement) {
@@ -57,7 +67,6 @@ function renderProperties() {
       }
     };
 
-    // Standard Props
     setVal('[data-prop="x"]', Math.round(element.x));
     setVal('[data-prop="y"]', Math.round(element.y));
     setVal('[data-prop="width"]', Math.round(element.width));
@@ -68,7 +77,6 @@ function renderProperties() {
       element.backgroundColor || "#4a90e2",
     );
 
-    // ✅ NEW: Text Props
     if (element.type === "text") {
       setVal('[data-prop="fontSize"]', element.fontSize || 16);
       setVal('[data-prop="color"]', element.color || "#333333");
@@ -79,7 +87,7 @@ function renderProperties() {
   }
 }
 
-// Attach Input Listeners (2-Way Binding)
+// Attach Input Listeners
 function initPropertyListeners() {
   const attach = (sel, key) => {
     const input = getEl(sel);
@@ -97,9 +105,9 @@ function initPropertyListeners() {
         val = parseInt(val, 10);
       }
 
-      element[key] = val; // Update Data
+      element[key] = val;
 
-      // Update Visuals on Canvas
+      // Update DOM
       const domEl = getEl(`.canvas > [data-id="${id}"]`);
       if (domEl) {
         if (key === "x") domEl.style.left = val + "px";
@@ -109,17 +117,18 @@ function initPropertyListeners() {
         if (key === "rotate") domEl.style.transform = `rotate(${val}deg)`;
         if (key === "backgroundColor") domEl.style.backgroundColor = val;
 
-        // ✅ NEW: Text Live Updates
+        // Text Specifics
         if (key === "fontSize") domEl.style.fontSize = val + "px";
         if (key === "color") domEl.style.color = val;
-        if (key === "textAlign") domEl.style.textAlign = val; // Works because of flex-box setup below
-        if (key === "textAlign")
+        if (key === "textAlign") {
+          domEl.style.textAlign = val;
           domEl.style.justifyContent =
             val === "center"
               ? "center"
               : val === "right"
                 ? "flex-end"
                 : "flex-start";
+        }
       }
     });
   };
@@ -130,14 +139,88 @@ function initPropertyListeners() {
   attach('[data-prop="height"]', "height");
   attach('[data-prop="rotate"]', "rotate");
   attach('[data-prop="backgroundColor"]', "backgroundColor");
-
-  // ✅ NEW: Attach Text Listeners
   attach('[data-prop="fontSize"]', "fontSize");
   attach('[data-prop="color"]', "color");
   attach('[data-prop="textAlign"]', "textAlign");
 }
 
-/* ===================== 2. EXPORT LOGIC ===================== */
+/* ===================== 2. SHORTCUTS & ACTIONS ===================== */
+
+function initKeyboardShortcuts() {
+  document.addEventListener("keydown", (e) => {
+    // Ignore if typing in an input
+    if (e.target.matches("input, textarea, [contenteditable]")) return;
+
+    const id = editorState.selectedElementId;
+    if (!id) return;
+
+    const element = editorState.elements.find((el) => el.id === id);
+    const domEl = getEl(`.canvas > [data-id="${id}"]`);
+    if (!element || !domEl) return;
+
+    const step = e.shiftKey ? 10 : 1; // Shift = Fast Move
+
+    switch (e.key) {
+      case "ArrowUp":
+        element.y -= step;
+        domEl.style.top = element.y + "px";
+        renderProperties();
+        e.preventDefault();
+        break;
+      case "ArrowDown":
+        element.y += step;
+        domEl.style.top = element.y + "px";
+        renderProperties();
+        e.preventDefault();
+        break;
+      case "ArrowLeft":
+        element.x -= step;
+        domEl.style.left = element.x + "px";
+        renderProperties();
+        e.preventDefault();
+        break;
+      case "ArrowRight":
+        element.x += step;
+        domEl.style.left = element.x + "px";
+        renderProperties();
+        e.preventDefault();
+        break;
+      case "Escape":
+        clearSelection();
+        break;
+      case "Delete":
+      case "Backspace":
+        domEl.remove();
+        editorState.elements = editorState.elements.filter(
+          (el) => el.id !== id,
+        );
+        clearSelection();
+        renderLayers(); // ✅ Fixed: Updates layers list
+        break;
+      case "d":
+      case "D":
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          duplicateElement(element);
+        }
+        break;
+    }
+  });
+}
+
+function duplicateElement(sourceElement) {
+  const newElement = { ...sourceElement }; // Copy data
+  newElement.id = generateID(); // New ID
+  newElement.x += 20; // Offset slightly
+  newElement.y += 20;
+
+  editorState.elements.push(newElement);
+  renderElement(newElement);
+  selectElement(newElement.id);
+  renderLayers(); // Update Layer List
+}
+
+/* ===================== 3. EXPORT LOGIC ===================== */
 function initExportButtons() {
   const btnJson = getEl("#btn-export-json");
   if (btnJson) {
@@ -173,12 +256,10 @@ function initExportButtons() {
         ctx.translate(-cx, -cy);
 
         if (el.type === "text") {
-          // ✅ NEW: Better Text Export Logic
           ctx.fillStyle = el.color || "#333333";
           ctx.font = `${el.fontSize || 16}px Inter, sans-serif`;
           ctx.textBaseline = "top";
 
-          // Handle Alignment in Export
           let xPos = el.x;
           if (el.textAlign === "center") xPos = el.x + el.width / 2;
           if (el.textAlign === "right") xPos = el.x + el.width;
@@ -205,7 +286,7 @@ function initExportButtons() {
   }
 }
 
-/* ===================== 3. CORE ELEMENT LOGIC ===================== */
+/* ===================== 4. CORE ELEMENT LOGIC ===================== */
 const canvas = getEl(".canvas");
 
 if (canvas) {
@@ -214,20 +295,7 @@ if (canvas) {
   });
 }
 
-document.addEventListener("keydown", (e) => {
-  if (e.target.matches("input, textarea, [contenteditable]")) return;
-  if (e.key !== "Delete" && e.key !== "Backspace") return;
-  if (!editorState.selectedElementId) return;
-
-  const id = editorState.selectedElementId;
-  const el = getEl(`.canvas > [data-id="${id}"]`);
-  if (el) el.remove();
-
-  editorState.elements = editorState.elements.filter((el) => el.id !== id);
-  clearSelection();
-  renderLayers();
-});
-
+// Dragging Loop
 document.addEventListener("mousemove", (e) => {
   if (
     isResizing ||
@@ -281,6 +349,11 @@ function clearSelection() {
     .querySelectorAll(".toolbar .tool button")
     .forEach((btn) => btn.classList.remove("active"));
 
+  // Reset "T" label back to "H"
+  document.querySelectorAll(".icon-label").forEach((span) => {
+    if (span.innerText === "T") span.innerText = "H";
+  });
+
   renderProperties();
 }
 
@@ -301,13 +374,44 @@ function selectElement(id) {
     attachResizeLogic(h, id, pos);
   });
 
-  document
-    .querySelectorAll(".layers-list li")
-    .forEach((li) => li.classList.remove("active"));
-  const a = getEl(`.layers-list li[data-id="${id}"]`);
-  if (a) a.classList.add("active");
-
+  // Re-render layers to show selection highlight
+  renderLayers();
   renderProperties();
+}
+
+/* ===================== NEW: CENTRALIZED LAYERS LOGIC ===================== */
+function renderLayers() {
+  const list = getEl(".layers-list");
+  if (!list) return;
+
+  list.innerHTML = ""; // Clear list to prevent ghost layers
+
+  // Reverse so top element is top of list
+  editorState.elements
+    .slice()
+    .reverse()
+    .forEach((el, reverseIndex) => {
+      const realIndex = editorState.elements.length - 1 - reverseIndex;
+
+      const li = document.createElement("li");
+      const typeLabel = el.type.charAt(0).toUpperCase() + el.type.slice(1);
+      li.innerText = `${typeLabel} ${realIndex + 1}`;
+      li.dataset.id = el.id;
+
+      // ✅ FIX: Add class for CSS icons (type-ellipse, type-text, etc.)
+      li.classList.add(`type-${el.type}`);
+
+      if (el.id === editorState.selectedElementId) {
+        li.classList.add("active");
+      }
+
+      li.addEventListener("mousedown", (e) => {
+        e.stopPropagation();
+        selectElement(el.id);
+      });
+
+      list.appendChild(li);
+    });
 }
 
 /* ===================== RESIZE LOGIC ===================== */
@@ -415,10 +519,10 @@ function renderElement(element) {
     backgroundColor: element.backgroundColor || "#4a90e2",
     transform: `rotate(${element.rotate || 0}deg)`,
     display: "flex",
-    alignItems: "center", // Vertical Align: Center by default
-    justifyContent: "center", // Horizontal Align: Center by default
-    fontSize: (element.fontSize || 16) + "px", // ✅ NEW: Font Size
-    color: element.color || "#333", // ✅ NEW: Text Color
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: (element.fontSize || 16) + "px",
+    color: element.color || "#333",
     userSelect: "none",
     boxSizing: "border-box",
     overflow: "visible",
@@ -434,7 +538,6 @@ function renderElement(element) {
     styles.border = "1px dashed #ccc";
     styles.padding = "4px";
 
-    // ✅ NEW: Text Alignment Logic
     const align = element.textAlign || "left";
     styles.textAlign = align;
     styles.justifyContent =
@@ -509,7 +612,6 @@ function createElement(type) {
     backgroundColor: "#4a90e2",
     text: type === "text" ? "Double click" : "",
     rotate: 0,
-    // ✅ NEW: Default Text Styles
     fontSize: 16,
     color: "#333333",
     textAlign: "left",
@@ -518,23 +620,9 @@ function createElement(type) {
   editorState.elements.push(element);
   renderElement(element);
 
-  // Render Layers
-  const list = getEl(".layers-list");
-  if (list) {
-    list.innerHTML = "";
-    editorState.elements.forEach((el, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${el.type} ${index + 1}`;
-      li.dataset.id = el.id;
-      li.addEventListener("mousedown", (e) => {
-        e.stopPropagation();
-        selectElement(el.id);
-      });
-      list.appendChild(li);
-    });
-  }
-
+  // ✅ FIX: Use central layers function
   selectElement(element.id);
+  renderLayers();
 
   // Highlight Tool
   document.querySelectorAll(".toolbar .tool button").forEach((btn) => {
@@ -544,7 +632,6 @@ function createElement(type) {
 }
 
 /* ===================== INIT ===================== */
-// Bind Tool Buttons
 ["rectangle", "ellipse", "line", "text"].forEach((tool) => {
   const btn = getEl(`[data-tool="${tool}"]`);
   if (btn) btn.addEventListener("click", () => createElement(tool));
@@ -552,5 +639,6 @@ function createElement(type) {
 
 console.log("🚀 Initializing listeners...");
 initPropertyListeners();
+initKeyboardShortcuts();
 initExportButtons();
 console.log("✅ Initialization Complete");
