@@ -1,0 +1,22 @@
+@font-face {
+    font-family: Inter;
+    src: url(../fonts/Inter_24pt-Regular.ttf);
+}
+
+html,
+body {
+    height: 100%;
+    font-family: Inter;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    outline: 2px solid red;
+}

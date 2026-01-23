@@ -1,0 +1,213 @@
+/* ================= PROPERTIES PANEL (PRO UI) ================= */
+.properties-panel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    font-family: 'Inter', sans-serif;
+
+    /* --- HEADER --- */
+    .panel-header {
+        padding: 16px;
+        border-bottom: 1px solid #f0f0f0;
+
+        h3 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #888;
+            margin: 0;
+        }
+    }
+
+    /* --- EMPTY STATE --- */
+    .empty-state {
+        padding: 40px 20px;
+        text-align: center;
+        color: #aaa;
+        font-size: 13px;
+        font-style: italic;
+    }
+
+    /* --- FORM LAYOUT --- */
+    .properties-form {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        /* Section Titles */
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            margin-top: 4px;
+        }
+
+        /* Divider Line */
+        .separator {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 8px 0;
+            width: 100%;
+        }
+
+        /* Grid for X/Y and W/H inputs */
+        .row-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Wrapper for Inputs */
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+
+            .icon-label {
+                position: absolute;
+                left: 10px;
+                font-size: 11px;
+                color: #999;
+                font-weight: 600;
+                pointer-events: none;
+                z-index: 2;
+            }
+
+            input[type="number"] {
+                width: 100%;
+                padding: 6px 6px 6px 28px;
+                background: #f7f7f7;
+                border: 1px solid transparent;
+                border-radius: 6px;
+                font-size: 13px;
+                color: #333;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                -moz-appearance: textfield;
+
+                &::-webkit-inner-spin-button,
+                &::-webkit-outer-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+
+                &:hover {
+                    background: #f0f0f0;
+                    border-color: #ddd;
+                }
+
+                &:focus {
+                    background: #fff;
+                    border-color: #4a90e2;
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+                }
+            }
+        }
+
+        /* --- COLOR PICKER ROW --- */
+        .color-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            label {
+                font-size: 12px;
+                color: #666;
+            }
+
+            .color-input-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: #f7f7f7;
+                padding: 4px 8px 4px 4px;
+                border-radius: 6px;
+                border: 1px solid transparent;
+                cursor: pointer;
+                transition: all 0.2s;
+
+                &:hover {
+                    background: #f0f0f0;
+                    border-color: #ddd;
+                }
+
+                .color-value-text {
+                    font-size: 12px;
+                    color: #555;
+                    font-family: monospace;
+                }
+
+                input[type="color"] {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    border: none;
+                    background: none;
+                    width: 24px;
+                    height: 24px;
+                    cursor: pointer;
+                    padding: 0;
+
+                    &::-webkit-color-swatch-wrapper {
+                        padding: 0;
+                    }
+
+                    &::-webkit-color-swatch {
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border-radius: 4px;
+                    }
+
+                    &::-moz-color-swatch {
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border-radius: 4px;
+                    }
+                }
+            }
+        }
+
+        /* --- ACTION BUTTONS (Corrected placement) --- */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+
+            button {
+                width: 100%;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .btn-primary {
+                background-color: #4a90e2;
+                color: white;
+                border: 1px solid #357abd;
+
+                &:hover {
+                    background-color: #357abd;
+                }
+            }
+
+            .btn-secondary {
+                background-color: #fff;
+                color: #333;
+                border: 1px solid #ccc;
+
+                &:hover {
+                    background-color: #f4f4f4;
+                    border-color: #bbb;
+                }
+            }
+        }
+    }
+}

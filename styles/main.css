@@ -1,0 +1,561 @@
+@charset "UTF-8";
+@font-face {
+  font-family: Inter;
+  src: url(../fonts/Inter_24pt-Regular.ttf);
+}
+html,
+body {
+  height: 100%;
+  font-family: Inter;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  outline: 2px solid red;
+}
+
+.sidebar {
+  width: 240px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f4f4f4;
+}
+
+.sidebar-left {
+  border-right: 1px solid #ddd;
+}
+.sidebar-left .layers-list li.active {
+  background: #e6f0ff;
+  border-color: #4a90e2;
+}
+
+.sidebar-right {
+  border-left: 1px solid #ddd;
+}
+.sidebar-right .hidden {
+  display: none;
+}
+
+.canvas-wrapper {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eaeaea;
+  position: relative;
+}
+.canvas-wrapper .canvas {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background: #fff;
+  border: 1px solid #ccc;
+  overflow: visible;
+  /* ================= SHAPES ================= */
+}
+.canvas-wrapper .canvas > div {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: grab;
+  z-index: 10;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+  /* ================= SELECTED ================= */
+}
+.canvas-wrapper .canvas > div:active {
+  cursor: grabbing;
+}
+.canvas-wrapper .canvas > div.selected {
+  z-index: 20;
+  outline: 2px dashed #ea758b;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px rgba(234, 117, 139, 0.15);
+  /* ================= RESIZE HANDLES ================= */
+  /* ================= (UX IMPROVED) ================= */
+  /* ================= (HIGH VISIBILITY) ================= */
+  /* Offsets must be half of width (7px) */
+  /* 3. Positioning (Centered on the Corner) */
+  /* Offset = -(Width / 2) -> -7px ensures the center of the handle sits exactly on the corner */
+}
+.canvas-wrapper .canvas > div.selected .resize-handle {
+  width: 14px;
+  height: 14px;
+  /* ✅ High Contrast Design */
+  background-color: #007aff;
+  /* Solid Blue Fill */
+  border: 2px solid #ffffff;
+  /* Thick White Border */
+  /* ✅ Stronger Shadow (Lift effect) */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  position: absolute;
+  z-index: 100;
+  /* Ensure it sits on top of everything */
+  pointer-events: auto;
+  box-sizing: border-box;
+  /* ✅ Invisible Click Area (Easier to grab) */
+}
+.canvas-wrapper .canvas > div.selected .resize-handle::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle.top-left {
+  top: -7px;
+  left: -7px;
+  cursor: nwse-resize;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle.top-right {
+  top: -7px;
+  right: -7px;
+  cursor: nesw-resize;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle.bottom-left {
+  bottom: -7px;
+  left: -7px;
+  cursor: nesw-resize;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle.bottom-right {
+  bottom: -7px;
+  right: -7px;
+  cursor: nwse-resize;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle {
+  /* 1. Bigger Visual Size */
+  width: 14px;
+  height: 14px;
+  background: #007aff;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  /* Circle */
+  position: absolute;
+  pointer-events: auto;
+  z-index: 30;
+  /* Highest layer */
+  box-sizing: border-box;
+  /* Optional: Small shadow to make them "pop" off the element */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  /* 2. THE INVISIBLE "HIT AREA" (Magic UX Fix) */
+  /* This creates a large invisible click zone around the small circle */
+}
+.canvas-wrapper .canvas > div.selected .resize-handle::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  /* Result: A 34x34px clickable area for a 14x14px visual handle */
+  border-radius: 50%;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle.top-left {
+  top: -7px;
+  left: -7px;
+  cursor: nwse-resize;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle.top-right {
+  top: -7px;
+  right: -7px;
+  cursor: nesw-resize;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle.bottom-left {
+  bottom: -7px;
+  left: -7px;
+  cursor: nesw-resize;
+}
+.canvas-wrapper .canvas > div.selected .resize-handle.bottom-right {
+  bottom: -7px;
+  right: -7px;
+  cursor: nwse-resize;
+}
+
+/* ================= TOOLBAR (ICONS) ================= */
+.toolbar {
+  position: absolute;
+  z-index: 100;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.toolbar .tool {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  /* --- TOOLTIP (Unchanged) --- */
+}
+.toolbar .tool button {
+  display: flex;
+  /* Center the icon */
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  /* Fixed square size */
+  height: 40px;
+  padding: 0;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  /* Icon Color Logic */
+  color: #555;
+  /* Default gray icon */
+  transition: all 0.2s ease;
+  /* SVG Specifics */
+  /* Hover State */
+  /* Active State */
+}
+.toolbar .tool button svg {
+  display: block;
+  /* 'currentColor' allows the SVG to take the text color defined above */
+  stroke: currentColor;
+}
+.toolbar .tool button:hover {
+  background-color: #f5f5f5;
+  color: #222;
+  /* Icon gets darker */
+}
+.toolbar .tool button.active {
+  background-color: #e6f0ff;
+  /* Light Blue BG */
+  color: #007aff;
+  /* Blue Icon */
+}
+.toolbar .tool h3 {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  margin: 0;
+  padding: 4px 8px;
+  width: -moz-max-content;
+  width: max-content;
+  background: #222;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.toolbar .tool h3::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: #222;
+}
+.toolbar .tool:hover h3 {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+/* ================= LAYERS PANEL (PRO UI) ================= */
+.layers-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  font-family: "Inter", sans-serif;
+  /* --- HEADER (Matches Properties Panel) --- */
+  /* --- SCROLLABLE LIST --- */
+  /* Optional: Empty State for Layers */
+}
+.layers-panel h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #888;
+  padding: 16px;
+  margin: 0;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: #fff;
+  /* or #fafafa for slight contrast */
+}
+.layers-panel .layers-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  /* Scrollbar Styling (Optional: for Chrome/Webkit) */
+  /* --- LAYER ITEM --- */
+}
+.layers-panel .layers-list::-webkit-scrollbar {
+  width: 6px;
+}
+.layers-panel .layers-list::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 3px;
+}
+.layers-panel .layers-list li {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+  border-bottom: 1px solid #f7f7f7;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border-left: 3px solid transparent;
+  /* Reserve space for active border */
+  /* Hover State */
+  /* --- ACTIVE / SELECTED STATE --- */
+  /* Optional: Add a pseudo-element icon for shapes */
+  /* This adds a tiny gray box icon before the name */
+  /* Active Icon Style */
+}
+.layers-panel .layers-list li:hover {
+  background-color: #f9f9f9;
+  color: #000;
+}
+.layers-panel .layers-list li.active {
+  background-color: #e6f0ff;
+  /* Light Blue Background */
+  color: #007aff;
+  /* Blue Text */
+  border-left-color: #007aff;
+  /* Blue Accent Border */
+}
+.layers-panel .layers-list li::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #ccc;
+  margin-right: 10px;
+  border-radius: 2px;
+  transition: border-color 0.2s;
+}
+.layers-panel .layers-list li.active::before {
+  border-color: #007aff;
+}
+.layers-panel:empty::after {
+  content: "No layers";
+  display: block;
+  text-align: center;
+  padding: 20px;
+  color: #aaa;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ================= PROPERTIES PANEL (PRO UI) ================= */
+.properties-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  font-family: "Inter", sans-serif;
+  /* --- HEADER --- */
+  /* --- EMPTY STATE --- */
+  /* --- FORM LAYOUT --- */
+}
+.properties-panel .panel-header {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.properties-panel .panel-header h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #888;
+  margin: 0;
+}
+.properties-panel .empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  font-style: italic;
+}
+.properties-panel .properties-form {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Section Titles */
+  /* Divider Line */
+  /* Grid for X/Y and W/H inputs */
+  /* Wrapper for Inputs */
+  /* --- COLOR PICKER ROW --- */
+  /* --- ACTION BUTTONS (Corrected placement) --- */
+}
+.properties-panel .properties-form .section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+.properties-panel .properties-form .separator {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 8px 0;
+  width: 100%;
+}
+.properties-panel .properties-form .row-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.properties-panel .properties-form .input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.properties-panel .properties-form .input-wrapper .icon-label {
+  position: absolute;
+  left: 10px;
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 2;
+}
+.properties-panel .properties-form .input-wrapper input[type=number] {
+  width: 100%;
+  padding: 6px 6px 6px 28px;
+  background: #f7f7f7;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  -moz-appearance: textfield;
+}
+.properties-panel .properties-form .input-wrapper input[type=number]::-webkit-inner-spin-button, .properties-panel .properties-form .input-wrapper input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.properties-panel .properties-form .input-wrapper input[type=number]:hover {
+  background: #f0f0f0;
+  border-color: #ddd;
+}
+.properties-panel .properties-form .input-wrapper input[type=number]:focus {
+  background: #fff;
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+.properties-panel .properties-form .color-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.properties-panel .properties-form .color-row label {
+  font-size: 12px;
+  color: #666;
+}
+.properties-panel .properties-form .color-row .color-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f7f7f7;
+  padding: 4px 8px 4px 4px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.properties-panel .properties-form .color-row .color-input-wrapper:hover {
+  background: #f0f0f0;
+  border-color: #ddd;
+}
+.properties-panel .properties-form .color-row .color-input-wrapper .color-value-text {
+  font-size: 12px;
+  color: #555;
+  font-family: monospace;
+}
+.properties-panel .properties-form .color-row .color-input-wrapper input[type=color] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+       appearance: none;
+  border: none;
+  background: none;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-webkit-color-swatch {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-moz-color-swatch {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+.properties-panel .properties-form .action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+.properties-panel .properties-form .action-buttons button {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: "Inter", sans-serif;
+}
+.properties-panel .properties-form .action-buttons .btn-primary {
+  background-color: #4a90e2;
+  color: white;
+  border: 1px solid #357abd;
+}
+.properties-panel .properties-form .action-buttons .btn-primary:hover {
+  background-color: #357abd;
+}
+.properties-panel .properties-form .action-buttons .btn-secondary {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+.properties-panel .properties-form .action-buttons .btn-secondary:hover {
+  background-color: #f4f4f4;
+  border-color: #bbb;
+}/*# sourceMappingURL=main.css.map */

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figma-style Design Tool</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="toolbar">
+        <button class="toolbar-button" data-shape="rectangle">
+          &#9649;
+        </button>
+        <button class="toolbar-button" data-shape="circle">&#9711;</button>
+      </div>
+      <div class="container">
+        <div class="layers-panel">
+          <h3>Layers</h3>
+          <ul class="layers-list"></ul>
+        </div>
+        <div class="canvas"></div>
+        <div class="properties-panel">
+          <h3>Properties</h3>
+          <div class="properties-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/state.js"></script>
+    <script src="js/elements.js"></script>
+    <script src="js/layers.js"></script>
+    <script src="js/selection.js"></script>
+    <script src="js/drag.js"></script>
+    <script src="js/resize.js"></script>
+    <script src="js/rotate.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/persistence.js"></script>
+    <script src="js/properties.js"></script>
+
+    <script>
+      // a function to simulate a click
+      function simClick(element) {
+        const event = new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        });
+        element.dispatchEvent(event);
+      }
+
+      // a function to simulate a mousedown
+      function simMouseDown(element, options = {}) {
+        const event = new MouseEvent('mousedown', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          ...options,
+        });
+        element.dispatchEvent(event);
+      }
+
+      // a function to simulate a mousemove
+      function simMouseMove(element, options = {}) {
+        const event = new MouseEvent('mousemove', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          ...options,
+        });
+        element.dispatchEvent(event);
+      }
+
+      // a function to simulate a mouseup
+      function simMouseUp(element, options = {}) {
+        const event = new MouseEvent('mouseup', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          ...options,
+        });
+        element.dispatchEvent(event);
+      }
+
+      // Get the buttons
+      const rectangleButton = document.querySelector('[data-shape="rectangle"]');
+
+      // Simulate a click on the rectangle button
+      simClick(rectangleButton);
+      simClick(rectangleButton);
+
+      // Get the layers
+      const layers = document.querySelectorAll('.layers-item');
+      console.log('layers: ', layers);
+
+      // Get the delete button for the first layer
+      const deleteButton = layers[0].querySelector('.delete');
+      console.log('deleteButton: ', deleteButton);
+
+      // Simumate a click on the delete button
+      simClick(deleteButton);
+
+      // Get the remaining element
+      const element = document.querySelector('.element');
+      console.log('element: ', element);
+
+      // Simulate a click on the element
+      simClick(element);
+
+      // Get the resize handle
+      const resizeHandle = document.querySelector('.handle.se');
+      console.log('resizeHandle: ', resizeHandle);
+
+      // Simulate a mousedown on the resize handle
+      simMouseDown(resizeHandle, { clientX: 150, clientY: 150 });
+
+      // Simulate a mousemove to resize the element
+      simMouseMove(document, { clientX: 200, clientY: 200 });
+
+      // Simulate a mouseup to stop resizing
+      simMouseUp(document);
+
+      // Log the final size of the element
+      console.log('element width: ', element.style.width);
+      console.log('element height: ', element.style.height);
+    </script>
+  </body>
+</html>

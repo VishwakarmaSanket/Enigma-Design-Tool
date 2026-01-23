@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enigma</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar sidebar-left">
+            <div class="layers-panel">
+                <h3>Layers</h3>
+                <ul class="layers-list">
+                    <!--Layers will be rendered here-->
+                </ul>
+            </div>
+        </aside>
+        <main class="canvas-wrapper" aria-label="Design canvas">
+            <div class="canvas"></div>
+            <div class="toolbar">
+                <div class="tool">
+                    <button data-tool="rectangle" aria-label="Rectangle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        </svg>
+                    </button>
+                    <h3>Rectangle</h3>
+                </div>
+
+                <div class="tool">
+                    <button data-tool="ellipse" aria-label="Ellipse">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                    </button>
+                    <h3>Ellipse</h3>
+                </div>
+
+                <div class="tool">
+                    <button data-tool="line" aria-label="Line">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="19" x2="19" y2="5"></line>
+                        </svg>
+                    </button>
+                    <h3>Line</h3>
+                </div>
+
+                <div class="tool">
+                    <button data-tool="text" aria-label="Text">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 7V4h16v3"></path>
+                            <line x1="12" y1="4" x2="12" y2="20"></line>
+                        </svg>
+                    </button>
+                    <h3>Text</h3>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar sidebar-right">
+            <div class="properties-panel">
+                <div class="panel-header">
+                    <h3>Properties</h3>
+                </div>
+
+                <div class="empty-state">
+                    <p>Select an element to edit</p>
+                </div>
+
+                <div class="properties-form hidden">
+
+                    <div class="section-label">Transform</div>
+
+                    <div class="row-group">
+                        <div class="input-wrapper">
+                            <span class="icon-label">X</span>
+                            <input type="number" data-prop="x">
+                        </div>
+                        <div class="input-wrapper">
+                            <span class="icon-label">Y</span>
+                            <input type="number" data-prop="y">
+                        </div>
+                    </div>
+
+                    <div class="row-group">
+                        <div class="input-wrapper">
+                            <span class="icon-label">W</span>
+                            <input type="number" data-prop="width">
+                        </div>
+                        <div class="input-wrapper">
+                            <span class="icon-label">H</span>
+                            <input type="number" data-prop="height">
+                        </div>
+                    </div>
+                    <div class="separator"></div>
+
+                    <div class="prop-row">
+                        <div class="section-label">Rotation</div>
+                        <div class="input-wrapper" style="width: 60px;">
+                            <input type="number" data-prop="rotate" min="0" max="360" value="0">
+                        </div>
+                    </div>
+
+                    <div class="separator"></div>
+
+                    <div class="section-label text-only hidden">Typography</div>
+
+                    <div class="row-group text-only hidden">
+                        <div class="input-wrapper">
+                            <span class="icon-label" style="font-size: 9px;">PX</span>
+                            <input type="number" data-prop="fontSize" min="8" max="200">
+                        </div>
+                        <div class="color-input-wrapper" style="flex: 1;">
+                            <input type="color" data-prop="color" value="#333333">
+                        </div>
+                    </div>
+
+                    <div class="row-group text-only hidden" style="margin-top: 8px;">
+                        <select data-prop="textAlign"
+                            style="width: 100%; padding: 6px; border-radius: 6px; border: 1px solid #ddd;">
+                            <option value="left">Left Align</option>
+                            <option value="center">Center</option>
+                            <option value="right">Right Align</option>
+                        </select>
+                    </div>
+
+                    <div class="separator text-only hidden"></div>
+
+                    <div class="section-label">Appearance</div>
+                    <div class="prop-row color-row">
+                        <label>Fill</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" data-prop="backgroundColor" value="#4a90e2">
+                        </div>
+                    </div>
+
+                    <div class="separator"></div>
+
+                    <div class="section-label">Actions</div>
+                    <div class="action-buttons">
+                        <button id="btn-export-json" class="btn-secondary">Save File (JSON)</button>
+                        <button id="btn-export-png" class="btn-primary">Export Image (PNG)</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="js/core/elements.js"></script>
+</body>
+
+</html>
