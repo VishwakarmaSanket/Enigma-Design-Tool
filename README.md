@@ -6,7 +6,7 @@
 
   <h1>E N I G M A</h1>
   <p><strong>The lightweight design tool crafted precisely with Vanilla JavaScript.</strong></p>
-  <p>Zero Dependencies. 100% Performance.</p>
+  <p>Zero Dependencies. 100% Performance. Now with V2 Powers.</p>
 
   <p>
     <a href="https://vishwakarmasanket.github.io/Enigma-Design-Tool/">
@@ -18,6 +18,7 @@
     <img src="https://img.shields.io/badge/Built_With-Vanilla_JS-yellow?style=flat-square&logo=javascript">
     <img src="https://img.shields.io/badge/Style-SCSS_BEM-pink?style=flat-square&logo=sass">
     <img src="https://img.shields.io/badge/Dependencies-🚫_None-critical?style=flat-square">
+    <img src="https://img.shields.io/badge/Version-2.0_Major_Update-success?style=flat-square">
   </p>
 </div>
 
@@ -33,15 +34,26 @@ Think of it as the essence of Figma, distilled down to its purest web fundamenta
 
 ---
 
+## 🚀 What's New in V2.0
+
+We just pushed a massive update to the core engine:
+* **🎨 Advanced Styling:** Control **Opacity**, **Borders**, **Drop Shadows**, and **Fill Colors**.
+* **⚡ Productivity:** Full **Undo/Redo** history system and **Copy/Paste** support.
+* **🏗️ Layer Management:** Reorder elements visually (Bring Forward / Send Backward).
+* **💾 Auto-Save:** Your work is automatically saved to LocalStorage. Never lose a pixel.
+
+---
+
 ## 🎯 Key Features
 
-* **📐 Primitive Vector Shapes:** Draw rectangles, ellipses, and lines with pixel-perfect precision.
-* **🅰️ Advanced Typography:** Not just text boxes. Control font size, color, and alignment (Left/Center/Right) like a pro.
-* **🎛️ Direct Manipulation Engine:** Drag to move, pull corner handles to resize. It feels natural.
+* **📐 Vector Primitives:** Draw Rectangles, Ellipses, and Lines with pixel-perfect precision.
+* **🅰️ Pro Typography Engine:** Support for Google Fonts (Inter, Roboto, Playfair, etc.), Alignment, and dynamic resizing.
+* **🎛️ Direct Manipulation:** Drag to move, pull corner handles to resize. Constrained strictly to the canvas.
 * **🔄 Reactive Properties Panel:** Two-way data binding. Change the shape, the sidebar updates. Change the sidebar, the shape updates instantly.
-* **🖼️ Dual Export Engine:**
-    * **Save Project (JSON):** Download the raw data to continue editing later.
-    * **Export Image (PNG):** Renders your DOM elements onto a canvas for a high-quality image download.
+* **🌐 Triple Export Engine:**
+    * **JSON:** Save raw data to edit later.
+    * **PNG:** High-quality image render.
+    * **HTML:** Export a standalone, code-ready HTML file of your design.
 
 ---
 
@@ -51,9 +63,12 @@ Design faster with industry-standard keyboard shortcuts.
 
 | Key | Action |
 | :--- | :--- |
-| `Arrow Keys` | Nudge selection 1px |
-| `Shift + Arrow` | Fast nudge (10px) |
-| `Ctrl + D` / `⌘ D` | **Duplicate** selection |
+| `Arrow Keys` | Nudge selection **5px** |
+| `Shift + Arrow` | Fast nudge (**10px**) |
+| `Ctrl + Z` | **Undo** last action |
+| `Ctrl + Y` | **Redo** action |
+| `Ctrl + C` | **Copy** selection |
+| `Ctrl + V` | **Paste** selection |
 | `Delete` / `Backspace` | Remove element |
 | `Escape` | Deselect all |
 | `Double Click (Text)`| Enter text editing mode |
@@ -65,9 +80,9 @@ Design faster with industry-standard keyboard shortcuts.
 This project is a showcase of modern, native web technologies:
 
 * **Core:** ES6+ JavaScript Modules (No bundlers required for dev).
-* **State Management:** A centralized, reactive store built without Redux.
+* **State Management:** A centralized, reactive store (`editorState`) that manages history, selection, and clipboard.
+* **Rendering:** **DOM-based**. Unlike traditional canvas apps, Enigma uses standard HTML `<div>` elements for rendering. This ensures crisp text, native accessibility, and easier debugging.
 * **Styling:** SCSS with BEM naming convention for scalable CSS.
-* **Architecture:** Component-based structure separated into `core` logic and `ui` rendering.
 
 ---
 
@@ -90,9 +105,11 @@ Want to run this locally? It's absurdly simple because there's no build step.
 
 We are just getting started.
 
-* [ ] **History API:** Robust Undo/Redo system.
+* [x] ~~History API (Undo/Redo)~~ (Completed in v2.0)
+* [x] ~~Layer Reordering~~ (Completed in v2.0)
 * [ ] **Infinite Canvas:** Pan and Zoom controls.
 * [ ] **Multi-Select:** Shift+Click and Drag-to-select bounding box.
+* [ ] **Grouping:** Combine elements into a single group container.
 
 ---
 
