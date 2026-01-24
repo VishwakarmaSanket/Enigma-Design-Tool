@@ -8,15 +8,19 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-
-    /* Dark Slate Background */
     background: var(--bg-panel);
     font-family: 'Inter', sans-serif;
 
-    /* --- HEADER --- */
+    /* 1. Hide scrollbars on the main container */
+    overflow: hidden;
+
+    /* --- HEADER (Fixed) --- */
     .panel-header {
         padding: 16px;
         border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+        background: var(--bg-panel);
+        z-index: 10;
 
         h3 {
             font-size: 11px;
@@ -37,228 +41,204 @@
         font-style: italic;
     }
 
-    /* --- FORM LAYOUT --- */
+    /* --- FORM LAYOUT (Scrollable but Invisible Bar) --- */
     .properties-form {
         padding: 16px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 0px;
 
-        /* Section Titles */
+        flex: 1;
+
+        /* 2. Enable Scrolling Logic */
+        overflow-y: auto;
+        overflow-x: hidden;
+        /* Force kill horizontal scroll */
+        padding-bottom: 40px;
+
+        /* 3. HIDE SCROLLBARS (Visual Only) */
+
+        /* Firefox */
+        scrollbar-width: none;
+
+        /* IE / Edge Legacy */
+        -ms-overflow-style: none;
+
+        /* Chrome / Safari / Edge / Opera */
+        &::-webkit-scrollbar {
+            display: none;
+            width: 0px;
+            background: transparent;
+        }
+
+        /* --- TYPOGRAPHY --- */
         .section-label {
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 4px;
-            margin-top: 4px;
+            margin-top: 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
         }
 
-        /* Divider Line */
         .separator {
-            height: 1px;
+            min-height: 1px;
             background: var(--border-color);
-            margin: 8px 0;
+            margin: 12px 0;
             width: 100%;
+            opacity: 0.5;
         }
 
-        /* Grid for X/Y and W/H inputs */
+        /* --- GRID SYSTEM --- */
         .row-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            /* Ensure it fits container */
+            box-sizing: border-box;
         }
 
-        /* Wrapper for Inputs */
+        /* --- INPUTS --- */
         .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
+            width: 100%;
+            height: 32px;
 
             .icon-label {
                 position: absolute;
                 left: 10px;
-                font-size: 11px;
+                font-size: 10px;
                 color: var(--text-muted);
-                font-weight: 600;
+                font-weight: 700;
                 pointer-events: none;
                 z-index: 2;
+                text-transform: uppercase;
             }
 
-            /* STANDARD NUMBER INPUTS */
-            input[type="number"] {
+            input[type="number"],
+            input[type="text"],
+            select {
                 width: 100%;
-                padding: 6px 6px 6px 28px;
-                /* Room for label */
-
-                /* Dark Input Fields */
+                height: 100%;
+                padding: 0 8px 0 28px;
                 background: rgba(0, 0, 0, 0.2);
                 border: 1px solid var(--border-color);
-
                 border-radius: 6px;
                 font-size: 13px;
                 color: var(--text-main);
                 font-weight: 500;
-                transition: all 0.2s ease;
-                -moz-appearance: textfield;
-
-                &::-webkit-inner-spin-button,
-                &::-webkit-outer-spin-button {
-                    -webkit-appearance: none;
-                    margin: 0;
-                }
-
-                &:hover {
-                    border-color: #64748b;
-                    /* Slate-500 */
-                }
+                outline: none;
+                transition: border 0.2s;
+                box-sizing: border-box;
+                /* Prevents padding from causing overflow */
 
                 &:focus {
-                    background: rgba(0, 0, 0, 0.4);
                     border-color: var(--primary);
-                    outline: none;
-                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+                    background: rgba(0, 0, 0, 0.3);
                 }
+            }
+
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
             }
         }
 
-        /* --- COLOR PICKER ROW --- */
-        .color-row {
+        select {
+            padding-left: 10px !important;
+            cursor: pointer;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%2394a3b8" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+        }
+
+        /* --- COLOR PICKER --- */
+        .color-input-wrapper {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-
-            label {
-                font-size: 12px;
-                color: var(--text-muted);
-            }
-
-            .color-input-wrapper {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                background: rgba(0, 0, 0, 0.2);
-                padding: 4px 8px 4px 4px;
-                border-radius: 6px;
-                border: 1px solid var(--border-color);
-                cursor: pointer;
-                transition: all 0.2s;
-
-                &:hover {
-                    background: rgba(0, 0, 0, 0.3);
-                    border-color: #64748b;
-                }
-
-                .color-value-text {
-                    font-size: 12px;
-                    color: var(--text-main);
-                    font-family: monospace;
-                }
-
-                input[type="color"] {
-                    -webkit-appearance: none;
-                    appearance: none;
-                    border: none;
-                    background: none;
-                    width: 24px;
-                    height: 24px;
-                    cursor: pointer;
-                    padding: 0;
-
-                    &::-webkit-color-swatch-wrapper {
-                        padding: 0;
-                    }
-
-                    &::-webkit-color-swatch {
-                        border: 1px solid rgba(255, 255, 255, 0.2);
-                        border-radius: 4px;
-                    }
-                }
-            }
-        }
-
-        /* =========================================
-           ✅ NEW: TYPOGRAPHY FIXES (DARK THEME) 
-           ========================================= */
-
-        /* 1. Alignment Dropdown (<select>) */
-        select {
-            width: 100%;
-            padding: 8px 12px;
-
-            /* Dark Background */
-            background-color: rgba(0, 0, 0, 0.2);
-            color: var(--text-main);
-
-            border: 1px solid var(--border-color);
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px;
             border-radius: 6px;
-            font-size: 13px;
+            border: 1px solid var(--border-color);
             cursor: pointer;
-            outline: none;
-
-            /* Remove default browser arrow and use custom styling if needed, 
-               but standard dark scrollbar is usually fine. */
-
-            &:hover {
-                border-color: #64748b;
-            }
-
-            &:focus {
-                border-color: var(--primary);
-            }
-
-            /* Dropdown Options (Dark Mode) */
-            option {
-                background-color: var(--bg-panel);
-                color: var(--text-main);
-            }
-        }
-
-        /* 2. Text Color Picker (Small Box) */
-        input[type="color"] {
-            background: transparent;
-            border: none;
             height: 32px;
             width: 100%;
-            cursor: pointer;
+            box-sizing: border-box;
+
+            &.full-width {
+                margin-bottom: 8px;
+            }
+
+            .color-value-text {
+                font-size: 11px;
+                color: var(--text-main);
+                font-family: monospace;
+                flex: 1;
+                padding-left: 8px;
+            }
+
+            input[type="color"] {
+                -webkit-appearance: none;
+                border: none;
+                background: none;
+                width: 24px;
+                height: 22px;
+                cursor: pointer;
+                padding: 0;
+                border-radius: 4px;
+
+                &::-webkit-color-swatch-wrapper {
+                    padding: 0;
+                }
+
+                &::-webkit-color-swatch {
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 3px;
+                }
+            }
         }
 
-        /* --- ACTION BUTTONS --- */
+        /* --- BUTTONS --- */
         .action-buttons {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-top: 10px;
 
             button {
-                width: 100%;
-                padding: 8px 12px;
+                height: 36px;
                 border-radius: 6px;
                 font-size: 12px;
-                font-weight: 500;
+                font-weight: 600;
                 cursor: pointer;
-                transition: all 0.2s;
-                font-family: 'Inter', sans-serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                border: 1px solid transparent;
             }
 
             .btn-primary {
                 background-color: var(--primary);
                 color: white;
-                border: 1px solid transparent;
-
-                &:hover {
-                    background-color: var(--primary-hover);
-                }
             }
 
             .btn-secondary {
                 background-color: transparent;
                 color: var(--text-main);
-                border: 1px solid var(--border-color);
+                border-color: var(--border-color);
+            }
 
-                &:hover {
-                    background-color: rgba(255, 255, 255, 0.05);
-                    border-color: #64748b;
-                }
+            button:hover {
+                opacity: 0.9;
             }
         }
     }

@@ -30,50 +30,114 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* ✅ Theme Update: Dark Slate Background */
   background: var(--bg-panel);
-  /* Ensure text is readable on dark background */
   color: var(--text-main);
+  font-family: "Inter", sans-serif;
   font-size: 14px;
 }
 
 /* --- Left Sidebar (Layers) --- */
 .sidebar-left {
-  /* ✅ Theme Update: Subtle Dark Border */
   border-right: 1px solid var(--border-color);
-  /* Layers List Styling */
+  /* Clean Flex container for the list */
 }
-.sidebar-left .layers-list {
-  list-style: none;
+.sidebar-left .layers-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-panel);
+  /* Header matching Properties Panel */
+}
+.sidebar-left .layers-panel h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  padding: 16px;
+  margin: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.sidebar-left .layers-panel .layers-list {
+  flex: 1;
+  overflow-y: auto;
   padding: 0;
   margin: 0;
-  overflow-y: auto;
 }
-.sidebar-left .layers-list li {
-  padding: 10px 16px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--border-color);
-  transition: background 0.2s;
+.sidebar-left .layers-panel .layers-list li {
   display: flex;
   align-items: center;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-main);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  border-left: 3px solid transparent;
 }
-.sidebar-left .layers-list li:hover {
-  /* Slightly lighter on hover */
-  background: rgba(255, 255, 255, 0.05);
+.sidebar-left .layers-panel .layers-list li:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
-.sidebar-left .layers-list li.active {
-  /* ✅ Theme Update: Blue Transparent Highlight */
-  background: var(--active-item-bg);
-  border-left: 3px solid var(--primary);
+.sidebar-left .layers-panel .layers-list li.active {
+  background-color: var(--active-item-bg);
   color: #ffffff;
+  border-left-color: var(--primary);
+}
+.sidebar-left .layers-panel .layers-list li {
+  /* Icons */
+}
+.sidebar-left .layers-panel .layers-list li::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--text-muted);
+  margin-right: 10px;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.sidebar-left .layers-panel .layers-list li {
+  /* Dynamic Icon Types */
+}
+.sidebar-left .layers-panel .layers-list li.type-ellipse::before {
+  border-radius: 50%;
+}
+.sidebar-left .layers-panel .layers-list li.type-text::before {
+  content: "T";
+  border: none;
+  font-weight: 800;
+  text-align: center;
+  font-size: 11px;
+  line-height: 12px;
+  color: var(--text-muted);
+}
+.sidebar-left .layers-panel .layers-list li.type-line::before {
+  height: 2px;
+  border: none;
+  background-color: var(--text-muted);
+  border-radius: 0;
+  transform: rotate(-45deg);
+}
+.sidebar-left .layers-panel .layers-list li {
+  /* Active Icons */
+}
+.sidebar-left .layers-panel .layers-list li.active::before {
+  border-color: #ffffff;
+  background: var(--primary);
+  border: 2px solid var(--primary);
+}
+.sidebar-left .layers-panel .layers-list li.active.type-text::before {
+  color: var(--primary);
+  background: transparent;
+}
+.sidebar-left .layers-panel .layers-list li.active.type-line::before {
+  background-color: var(--primary);
 }
 
 /* --- Right Sidebar (Properties) --- */
 .sidebar-right {
-  /* ✅ Theme Update: Subtle Dark Border */
   border-left: 1px solid var(--border-color);
   padding: 0;
-  /* Utility class for hiding empty states/forms */
 }
 .sidebar-right .hidden {
   display: none !important;
@@ -83,6 +147,53 @@ body {
    LAYOUT: CANVAS
    The main drawing area and element interaction
    ========================================= */
+/* ... (Existing canvas styles) ... */
+/* =========================================
+   COMPONENT: APP HEADER (Floating)
+   Top-Center Branding
+   ========================================= */
+.app-header {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  /* Matches Toolbar Style */
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  /* Logo Image */
+}
+.app-header img {
+  width: 40px;
+  height: 40px;
+  display: block;
+  border-radius: 4px;
+}
+.app-header {
+  /* App Name */
+}
+.app-header span {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+}
+.app-header {
+  /* Optional: File Name Tag (lighter text) */
+}
+.app-header .file-tag {
+  font-weight: 400;
+  color: var(--text-muted);
+  padding-left: 8px;
+  border-left: 1px solid var(--border-color);
+}
+
 .canvas-wrapper {
   flex: 1;
   height: 100%;
@@ -461,14 +572,18 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* ✅ Theme Update: Dark Slate Background */
   background: var(--bg-panel);
   font-family: "Inter", sans-serif;
-  /* --- HEADER --- */
+  /* 1. Hide scrollbars on the main container */
+  overflow: hidden;
+  /* --- HEADER (Fixed) --- */
 }
 .properties-panel .panel-header {
   padding: 16px;
   border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  z-index: 10;
 }
 .properties-panel .panel-header h3 {
   font-size: 11px;
@@ -476,7 +591,6 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: var(--text-muted);
-  /* Muted text for labels */
   margin: 0;
 }
 .properties-panel {
@@ -490,173 +604,193 @@ body {
   font-style: italic;
 }
 .properties-panel {
-  /* --- FORM LAYOUT --- */
+  /* --- FORM LAYOUT (Scrollable but Invisible Bar) --- */
 }
 .properties-panel .properties-form {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  /* Section Titles */
+  gap: 0px;
+  flex: 1;
+  /* 2. Enable Scrolling Logic */
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Force kill horizontal scroll */
+  padding-bottom: 40px;
+  /* 3. HIDE SCROLLBARS (Visual Only) */
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE / Edge Legacy */
+  -ms-overflow-style: none;
+  /* Chrome / Safari / Edge / Opera */
+}
+.properties-panel .properties-form::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  background: transparent;
+}
+.properties-panel .properties-form {
+  /* --- TYPOGRAPHY --- */
 }
 .properties-panel .properties-form .section-label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-main);
-  /* Bright text for titles */
-  margin-bottom: 4px;
-  margin-top: 4px;
-}
-.properties-panel .properties-form {
-  /* Divider Line */
+  margin-top: 12px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
 }
 .properties-panel .properties-form .separator {
-  height: 1px;
+  min-height: 1px;
   background: var(--border-color);
-  margin: 8px 0;
+  margin: 12px 0;
   width: 100%;
+  opacity: 0.5;
 }
 .properties-panel .properties-form {
-  /* Grid for X/Y and W/H inputs */
+  /* --- GRID SYSTEM --- */
 }
 .properties-panel .properties-form .row-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  /* Ensure it fits container */
+  box-sizing: border-box;
 }
 .properties-panel .properties-form {
-  /* Wrapper for Inputs */
+  /* --- INPUTS --- */
 }
 .properties-panel .properties-form .input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
+  height: 32px;
 }
 .properties-panel .properties-form .input-wrapper .icon-label {
   position: absolute;
   left: 10px;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
-  font-weight: 600;
+  font-weight: 700;
   pointer-events: none;
   z-index: 2;
+  text-transform: uppercase;
 }
-.properties-panel .properties-form .input-wrapper input[type=number] {
+.properties-panel .properties-form .input-wrapper input[type=number],
+.properties-panel .properties-form .input-wrapper input[type=text],
+.properties-panel .properties-form .input-wrapper select {
   width: 100%;
-  padding: 6px 6px 6px 28px;
-  /* Dark Input Fields */
+  height: 100%;
+  padding: 0 8px 0 28px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 13px;
   color: var(--text-main);
   font-weight: 500;
-  transition: all 0.2s ease;
-  -moz-appearance: textfield;
+  outline: none;
+  transition: border 0.2s;
+  box-sizing: border-box;
+  /* Prevents padding from causing overflow */
 }
-.properties-panel .properties-form .input-wrapper input[type=number]::-webkit-inner-spin-button, .properties-panel .properties-form .input-wrapper input[type=number]::-webkit-outer-spin-button {
+.properties-panel .properties-form .input-wrapper input[type=number]:focus,
+.properties-panel .properties-form .input-wrapper input[type=text]:focus,
+.properties-panel .properties-form .input-wrapper select:focus {
+  border-color: var(--primary);
+  background: rgba(0, 0, 0, 0.3);
+}
+.properties-panel .properties-form .input-wrapper input[type=number]::-webkit-inner-spin-button,
+.properties-panel .properties-form .input-wrapper input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.properties-panel .properties-form .input-wrapper input[type=number]:hover {
-  border-color: #64748b;
-  /* Slate-500 */
-}
-.properties-panel .properties-form .input-wrapper input[type=number]:focus {
-  background: rgba(0, 0, 0, 0.4);
-  border-color: var(--primary);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+.properties-panel .properties-form select {
+  padding-left: 10px !important;
+  cursor: pointer;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%2394a3b8" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 4px center;
 }
 .properties-panel .properties-form {
-  /* --- COLOR PICKER ROW --- */
+  /* --- COLOR PICKER --- */
 }
-.properties-panel .properties-form .color-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.properties-panel .properties-form .color-row label {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-.properties-panel .properties-form .color-row .color-input-wrapper {
+.properties-panel .properties-form .color-input-wrapper {
   display: flex;
   align-items: center;
   gap: 8px;
   background: rgba(0, 0, 0, 0.2);
-  padding: 4px 8px 4px 4px;
+  padding: 4px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
   cursor: pointer;
-  transition: all 0.2s;
+  height: 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
-.properties-panel .properties-form .color-row .color-input-wrapper:hover {
-  background: rgba(0, 0, 0, 0.3);
-  border-color: #64748b;
+.properties-panel .properties-form .color-input-wrapper.full-width {
+  margin-bottom: 8px;
 }
-.properties-panel .properties-form .color-row .color-input-wrapper .color-value-text {
-  font-size: 12px;
+.properties-panel .properties-form .color-input-wrapper .color-value-text {
+  font-size: 11px;
   color: var(--text-main);
   font-family: monospace;
+  flex: 1;
+  padding-left: 8px;
 }
-.properties-panel .properties-form .color-row .color-input-wrapper input[type=color] {
+.properties-panel .properties-form .color-input-wrapper input[type=color] {
   -webkit-appearance: none;
-  appearance: none;
   border: none;
   background: none;
   width: 24px;
-  height: 24px;
+  height: 22px;
   cursor: pointer;
   padding: 0;
+  border-radius: 4px;
 }
-.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-webkit-color-swatch-wrapper {
+.properties-panel .properties-form .color-input-wrapper input[type=color]::-webkit-color-swatch-wrapper {
   padding: 0;
 }
-.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-webkit-color-swatch {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-moz-color-swatch {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+.properties-panel .properties-form .color-input-wrapper input[type=color]::-webkit-color-swatch {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
 }
 .properties-panel .properties-form {
-  /* --- ACTION BUTTONS --- */
+  /* --- BUTTONS --- */
 }
 .properties-panel .properties-form .action-buttons {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 10px;
 }
 .properties-panel .properties-form .action-buttons button {
-  width: 100%;
-  padding: 8px 12px;
+  height: 36px;
   border-radius: 6px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: "Inter", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
 }
 .properties-panel .properties-form .action-buttons .btn-primary {
   background-color: var(--primary);
   color: white;
-  border: 1px solid transparent;
-}
-.properties-panel .properties-form .action-buttons .btn-primary:hover {
-  background-color: var(--primary-hover);
 }
 .properties-panel .properties-form .action-buttons .btn-secondary {
-  /* Dark Theme Secondary Button */
   background-color: transparent;
   color: var(--text-main);
-  border: 1px solid var(--border-color);
+  border-color: var(--border-color);
 }
-.properties-panel .properties-form .action-buttons .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: #64748b;
+.properties-panel .properties-form .action-buttons button:hover {
+  opacity: 0.9;
 }
 
 /* =========================================

@@ -7,6 +7,9 @@
     <title>Enigma</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="shortcut icon" href="./favicon.png" type="image/x-icon">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;700&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -20,11 +23,10 @@
         </aside>
 
         <main class="canvas-wrapper" aria-label="Design canvas">
-
             <div class="app-header">
                 <img src="favicon.svg" alt="Logo">
                 <span>Enigma</span>
-                <span class="file-tag">Untitled</span>
+                <span class="file-tag">v2.0</span>
             </div>
 
             <div class="canvas"></div>
@@ -33,7 +35,7 @@
                 <div class="tool">
                     <button data-tool="rectangle" aria-label="Rectangle">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            stroke-width="2">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                         </svg>
                     </button>
@@ -42,7 +44,7 @@
                 <div class="tool">
                     <button data-tool="ellipse" aria-label="Ellipse">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            stroke-width="2">
                             <circle cx="12" cy="12" r="10"></circle>
                         </svg>
                     </button>
@@ -51,7 +53,7 @@
                 <div class="tool">
                     <button data-tool="line" aria-label="Line">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            stroke-width="2">
                             <line x1="5" y1="19" x2="19" y2="5"></line>
                         </svg>
                     </button>
@@ -60,7 +62,7 @@
                 <div class="tool">
                     <button data-tool="text" aria-label="Text">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            stroke-width="2">
                             <path d="M4 7V4h16v3"></path>
                             <line x1="12" y1="4" x2="12" y2="20"></line>
                         </svg>
@@ -78,7 +80,9 @@
                 <div class="empty-state">
                     <p>Select an element to edit</p>
                 </div>
+
                 <div class="properties-form hidden">
+
                     <div class="section-label">Transform</div>
                     <div class="row-group">
                         <div class="input-wrapper">
@@ -104,7 +108,8 @@
 
                     <div class="prop-row">
                         <div class="section-label">Rotation</div>
-                        <div class="input-wrapper" style="width: 60px;">
+                        <div class="input-wrapper" style="width: 80px;">
+                            <span class="icon-label">°</span>
                             <input type="number" data-prop="rotate" min="0" max="360" value="0">
                         </div>
                     </div>
@@ -112,46 +117,105 @@
                     <div class="text-only hidden">
                         <div class="separator"></div>
                         <div class="section-label">Typography</div>
-                        <div class="row-group" style="margin-bottom: 12px;">
+
+                        <div class="input-wrapper" style="margin-bottom: 10px;">
+                            <select data-prop="fontFamily">
+                                <option value="Inter, sans-serif">Inter</option>
+                                <option value="'Roboto', sans-serif">Roboto</option>
+                                <option value="'Playfair Display', serif">Playfair Display</option>
+                                <option value="'Montserrat', sans-serif">Montserrat</option>
+                                <option value="monospace">Monospace</option>
+                            </select>
+                        </div>
+
+                        <div class="row-group">
                             <div class="input-wrapper">
-                                <span class="icon-label" style="font-size: 9px;">PX</span>
-                                <input type="number" data-prop="fontSize" value="16">
+                                <span class="icon-label">PX</span>
+                                <input type="number" data-prop="fontSize">
                             </div>
                             <div class="input-wrapper">
                                 <select data-prop="textAlign">
-                                    <option value="left">Left Align</option>
+                                    <option value="left">Left</option>
                                     <option value="center">Center</option>
-                                    <option value="right">Right Align</option>
+                                    <option value="right">Right</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="color-row">
-                            <label>Color</label>
-                            <div class="color-input-wrapper">
-                                <span class="color-value-text">#333333</span>
-                                <input type="color" data-prop="color" value="#333333">
-                            </div>
+
+                        <div class="section-label" style="margin-top:10px; font-size:10px; color:#64748b;">COLOR</div>
+                        <div class="color-input-wrapper full-width">
+                            <span class="color-value-text">#333333</span>
+                            <input type="color" data-prop="color">
                         </div>
                     </div>
 
                     <div class="separator"></div>
 
                     <div class="section-label">Appearance</div>
-                    <div class="prop-row color-row">
-                        <label>Fill</label>
-                        <div class="color-input-wrapper">
-                            <span class="color-value-text">#4A90E2</span>
-                            <input type="color" data-prop="backgroundColor" value="#4a90e2">
+
+                    <div class="row-group" style="align-items: center; margin-bottom: 8px;">
+                        <label style="font-size: 11px; color: #94a3b8; font-weight: 600;">OPACITY</label>
+                        <div style="display: flex; gap: 8px; align-items: center; flex: 1;">
+                            <input type="range" data-prop="opacity" min="0" max="1" step="0.1"
+                                style="flex:1; height: 4px;">
+                            <span id="opacity-val"
+                                style="font-size: 11px; min-width: 32px; text-align: right; color: var(--text-main);">100%</span>
                         </div>
                     </div>
 
-                    <div class="separator"></div>
+                    <div class="section-label" style="font-weight: 500; font-size: 10px; color: #64748b;">FILL</div>
+                    <div class="color-input-wrapper full-width">
+                        <span class="color-value-text">#4A90E2</span>
+                        <input type="color" data-prop="backgroundColor">
+                    </div>
+
+                    <div class="section-label"
+                        style="font-weight: 500; font-size: 10px; color: #64748b; margin-top: 10px;">BORDER</div>
+                    <div class="row-group">
+                        <div class="input-wrapper">
+                            <span class="icon-label">W</span>
+                            <input type="number" data-prop="borderWidth" placeholder="0" min="0">
+                        </div>
+                        <div class="color-input-wrapper">
+                            <input type="color" data-prop="borderColor" value="#000000">
+                        </div>
+                    </div>
+
+                    <div class="section-label"
+                        style="font-weight: 500; font-size: 10px; color: #64748b; margin-top: 10px;">SHADOW</div>
+                    <div class="row-group">
+                        <div class="input-wrapper">
+                            <span class="icon-label">B</span>
+                            <input type="number" data-prop="shadowBlur" placeholder="0" min="0">
+                        </div>
+                        <div class="color-input-wrapper">
+                            <input type="color" data-prop="shadowColor" value="#000000">
+                        </div>
+                    </div>
+
+                    <div class="separator" style="margin-top: 20px;"></div>
 
                     <div class="section-label">Actions</div>
                     <div class="action-buttons">
-                        <button id="btn-export-json" class="btn-secondary">Save File (JSON)</button>
-                        <button id="btn-export-png" class="btn-primary">Export Image (PNG)</button>
+                        <button id="btn-undo" class="btn-secondary">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M3 7v6h6"></path>
+                                <path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"></path>
+                            </svg>
+                            Undo
+                        </button>
+                        <button id="btn-export-png" class="btn-primary">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            Export PNG
+                        </button>
                     </div>
+
                 </div>
             </div>
         </aside>

@@ -1,9 +1,12 @@
-console.log("🚀 Script Logic Starting...");
+console.log("🚀 Enigma vFinal Engine Starting...");
 
 /* ===================== 0. INTERNAL STATE ===================== */
 const editorState = {
   elements: [],
   selectedElementId: null,
+  history: [],
+  historyStep: -1,
+  clipboard: null,
 };
 
 /* ===================== GLOBAL VARIABLES ===================== */
@@ -13,367 +16,325 @@ let dragOffsetX = 0;
 let dragOffsetY = 0;
 let activeDOMElement = null;
 
-// Helpers
 const getEl = (sel) => document.querySelector(sel);
 const generateID = () => crypto.randomUUID();
 
-/* ===================== 1. PROPERTIES PANEL LOGIC ===================== */
-function renderProperties() {
-  try {
-    const panel = getEl(".properties-panel");
-    const empty = getEl(".empty-state");
-    const form = getEl(".properties-form");
+/* ===================== 1. HISTORY & AUTO-SAVE ===================== */
+function saveToLocal() {
+  localStorage.setItem("enigma_v2_data", JSON.stringify(editorState.elements));
+}
 
-    if (!panel || !empty || !form) return;
-
-    const id = editorState.selectedElementId;
-
-    // A. No Selection
-    if (!id) {
-      empty.classList.remove("hidden");
-      form.classList.add("hidden");
-      return;
-    }
-
-    const element = editorState.elements.find((el) => el.id === id);
-    if (!element) return;
-
-    // B. Selection Exists
-    empty.classList.add("hidden");
-    form.classList.remove("hidden");
-
-    // Line Tool Label Fix
-    const allLabels = document.querySelectorAll(".icon-label");
-    allLabels.forEach((span) => {
-      if (span.innerText === "H" || span.innerText === "T") {
-        span.innerText = element.type === "line" ? "T" : "H";
-        span.title = element.type === "line" ? "Thickness" : "Height";
-      }
-    });
-
-    // Toggle Text Options
-    const textSections = document.querySelectorAll(".text-only");
-    textSections.forEach((section) => {
-      if (element.type === "text") section.classList.remove("hidden");
-      else section.classList.add("hidden");
-    });
-
-    // C. Update Inputs
-    const setVal = (sel, val) => {
-      const el = getEl(sel);
-      if (el && el !== document.activeElement) {
-        el.value = val;
-
-        // ✅ NEW: If this is a color input, update the Hex Label next to it
-        if (el.type === "color") {
-          const label = el.parentElement.querySelector(".color-value-text");
-          if (label) label.innerText = val.toUpperCase();
-        }
-      }
-    };
-
-    setVal('[data-prop="x"]', Math.round(element.x));
-    setVal('[data-prop="y"]', Math.round(element.y));
-    setVal('[data-prop="width"]', Math.round(element.width));
-    setVal('[data-prop="height"]', Math.round(element.height));
-    setVal('[data-prop="rotate"]', element.rotate || 0);
-    setVal(
-      '[data-prop="backgroundColor"]',
-      element.backgroundColor || "#4a90e2",
-    );
-
-    if (element.type === "text") {
-      setVal('[data-prop="fontSize"]', element.fontSize || 16);
-      setVal('[data-prop="color"]', element.color || "#333333");
-      setVal('[data-prop="textAlign"]', element.textAlign || "left");
-    }
-  } catch (error) {
-    console.error("Render Properties Error:", error);
+function loadFromLocal() {
+  const data = localStorage.getItem("enigma_v2_data");
+  if (data) {
+    editorState.elements = JSON.parse(data);
+    editorState.elements.forEach((el) => renderElement(el));
+    renderLayers();
+    saveHistory();
   }
 }
 
-// Attach Input Listeners
-function initPropertyListeners() {
-  const attach = (sel, key) => {
-    const input = getEl(sel);
-    if (!input) return;
+function saveHistory() {
+  if (editorState.historyStep < editorState.history.length - 1) {
+    editorState.history = editorState.history.slice(
+      0,
+      editorState.historyStep + 1,
+    );
+  }
+  if (editorState.history.length > 50) editorState.history.shift();
+  editorState.history.push(JSON.stringify(editorState.elements));
+  editorState.historyStep++;
+  saveToLocal();
+}
 
+function undo() {
+  if (editorState.historyStep > 0) {
+    editorState.historyStep--;
+    restoreHistory();
+  }
+}
+
+function redo() {
+  if (editorState.historyStep < editorState.history.length - 1) {
+    editorState.historyStep++;
+    restoreHistory();
+  }
+}
+
+function restoreHistory() {
+  const json = editorState.history[editorState.historyStep];
+  editorState.elements = JSON.parse(json);
+  getEl(".canvas").innerHTML = "";
+  editorState.elements.forEach((el) => renderElement(el));
+  clearSelection();
+  renderLayers();
+  saveToLocal();
+}
+
+/* ===================== 2. PROPERTIES PANEL ===================== */
+function renderProperties() {
+  const panel = getEl(".properties-panel");
+  const empty = getEl(".empty-state");
+  const form = getEl(".properties-form");
+
+  if (!panel || !empty || !form) return;
+
+  const id = editorState.selectedElementId;
+  if (!id) {
+    empty.classList.remove("hidden");
+    form.classList.add("hidden");
+    return;
+  }
+
+  const element = editorState.elements.find((el) => el.id === id);
+  if (!element) return;
+
+  empty.classList.add("hidden");
+  form.classList.remove("hidden");
+
+  const textSections = document.querySelectorAll(".text-only");
+  textSections.forEach((section) => {
+    if (element.type === "text") section.classList.remove("hidden");
+    else section.classList.add("hidden");
+  });
+
+  const setVal = (sel, val) => {
+    const el = getEl(sel);
+    if (el && el !== document.activeElement) {
+      el.value = val;
+      if (el.type === "color") {
+        const label = el.parentElement.querySelector(".color-value-text");
+        if (label) label.innerText = val.toUpperCase();
+      }
+    }
+  };
+
+  setVal('[data-prop="x"]', Math.round(element.x));
+  setVal('[data-prop="y"]', Math.round(element.y));
+  setVal('[data-prop="width"]', Math.round(element.width));
+  setVal('[data-prop="height"]', Math.round(element.height));
+  setVal('[data-prop="rotate"]', element.rotate || 0);
+
+  setVal('[data-prop="backgroundColor"]', element.backgroundColor || "#4a90e2");
+  setVal(
+    '[data-prop="opacity"]',
+    element.opacity !== undefined ? element.opacity : 1,
+  );
+  getEl("#opacity-val").innerText =
+    Math.round((element.opacity || 1) * 100) + "%";
+
+  setVal('[data-prop="borderWidth"]', element.borderWidth || 0);
+  setVal('[data-prop="borderColor"]', element.borderColor || "#000000");
+
+  setVal('[data-prop="shadowBlur"]', element.shadowBlur || 0);
+  setVal('[data-prop="shadowColor"]', element.shadowColor || "#000000");
+
+  if (element.type === "text") {
+    setVal('[data-prop="fontSize"]', element.fontSize || 16);
+    setVal('[data-prop="color"]', element.color || "#333333");
+    setVal('[data-prop="textAlign"]', element.textAlign || "left");
+    setVal(
+      '[data-prop="fontFamily"]',
+      element.fontFamily || "Inter, sans-serif",
+    );
+  }
+}
+
+function initPropertyListeners() {
+  const inputs = document.querySelectorAll("[data-prop]");
+  inputs.forEach((input) => {
     input.addEventListener("input", (e) => {
       const id = editorState.selectedElementId;
       if (!id) return;
       const element = editorState.elements.find((el) => el.id === id);
-      if (!element) return;
-
+      const key = input.dataset.prop;
       let val = e.target.value;
-      if (input.type === "number") {
-        if (val === "") return;
-        val = parseInt(val, 10);
-      }
 
-      // ✅ NEW: Sync Hex Label immediately while dragging color picker
+      if (input.type === "number") val = parseInt(val, 10) || 0;
+      if (input.type === "range") val = parseFloat(val);
+
+      element[key] = val;
+
+      const domEl = getEl(`.canvas > [data-id="${id}"]`);
+      if (domEl) updateElementVisuals(domEl, element);
+
+      if (key === "opacity")
+        getEl("#opacity-val").innerText = Math.round(val * 100) + "%";
       if (input.type === "color") {
         const label = input.parentElement.querySelector(".color-value-text");
         if (label) label.innerText = val.toUpperCase();
       }
-
-      element[key] = val;
-
-      // Update DOM
-      const domEl = getEl(`.canvas > [data-id="${id}"]`);
-      if (domEl) {
-        if (key === "x") domEl.style.left = val + "px";
-        if (key === "y") domEl.style.top = val + "px";
-        if (key === "width") domEl.style.width = val + "px";
-        if (key === "height") domEl.style.height = val + "px";
-        if (key === "rotate") domEl.style.transform = `rotate(${val}deg)`;
-        if (key === "backgroundColor") domEl.style.backgroundColor = val;
-
-        // Text Specifics
-        if (key === "fontSize") domEl.style.fontSize = val + "px";
-        if (key === "color") domEl.style.color = val;
-        if (key === "textAlign") {
-          domEl.style.textAlign = val;
-          domEl.style.justifyContent =
-            val === "center"
-              ? "center"
-              : val === "right"
-                ? "flex-end"
-                : "flex-start";
-        }
-      }
     });
+
+    input.addEventListener("change", () => saveHistory());
+  });
+
+  const btnUndo = getEl("#btn-undo");
+  if (btnUndo) btnUndo.addEventListener("click", undo);
+
+  // ✅ NEW: Export HTML Button Listener
+  const btnHtml = getEl("#btn-export-html");
+  if (btnHtml) btnHtml.addEventListener("click", exportToHTML);
+}
+
+/* ===================== 3. RENDERING ENGINE ===================== */
+function updateElementVisuals(containerDiv, element) {
+  containerDiv.style.left = element.x + "px";
+  containerDiv.style.top = element.y + "px";
+  containerDiv.style.width = element.width + "px";
+  containerDiv.style.height = element.height + "px";
+  containerDiv.style.transform = `rotate(${element.rotate || 0}deg)`;
+  containerDiv.style.zIndex = editorState.elements.indexOf(element); // Sync Z-Index
+
+  const contentDiv = containerDiv.querySelector(".element-content");
+  if (!contentDiv) return;
+
+  contentDiv.style.opacity =
+    element.opacity !== undefined ? element.opacity : 1;
+  contentDiv.style.backgroundColor = element.backgroundColor || "transparent";
+
+  if (element.borderWidth > 0) {
+    contentDiv.style.border = `${element.borderWidth}px solid ${element.borderColor}`;
+  } else {
+    contentDiv.style.border =
+      element.type === "text" ? "1px dashed transparent" : "none";
+    if (
+      element.type === "text" &&
+      !containerDiv.classList.contains("editing")
+    ) {
+      contentDiv.style.border = "1px dashed #ccc";
+    }
+  }
+
+  if (element.shadowBlur > 0) {
+    contentDiv.style.filter = `drop-shadow(0px 4px ${element.shadowBlur}px ${element.shadowColor})`;
+  } else {
+    contentDiv.style.filter = "none";
+  }
+
+  if (element.type === "text") {
+    contentDiv.style.fontSize = (element.fontSize || 16) + "px";
+    contentDiv.style.color = element.color || "#333";
+    contentDiv.style.textAlign = element.textAlign || "left";
+    contentDiv.style.fontFamily = element.fontFamily || "Inter, sans-serif";
+    contentDiv.style.display = "flex";
+    contentDiv.style.alignItems = "center";
+    contentDiv.style.justifyContent =
+      element.textAlign === "center"
+        ? "center"
+        : element.textAlign === "right"
+          ? "flex-end"
+          : "flex-start";
+    contentDiv.innerText = element.text || "Double click";
+  }
+
+  if (element.type === "ellipse") contentDiv.style.borderRadius = "50%";
+  else contentDiv.style.borderRadius = "0";
+}
+
+function renderElement(element) {
+  const container = document.createElement("div");
+  container.className = "element-wrapper";
+  container.dataset.id = element.id;
+
+  Object.assign(container.style, {
+    position: "absolute",
+    userSelect: "none",
+    boxSizing: "border-box",
+    outline: "none",
+    zIndex: editorState.elements.indexOf(element), // Initial Z-Index
+  });
+
+  const content = document.createElement("div");
+  content.className = "element-content";
+  Object.assign(content.style, {
+    width: "100%",
+    height: "100%",
+    boxSizing: "border-box",
+    overflow: "visible",
+  });
+
+  container.appendChild(content);
+  getEl(".canvas").appendChild(container);
+
+  updateElementVisuals(container, element);
+
+  if (element.type === "text") {
+    container.addEventListener("dblclick", (e) => {
+      e.stopPropagation();
+      content.contentEditable = true;
+      content.focus();
+      container.classList.add("editing");
+      content.style.cursor = "text";
+      content.style.border = "1px solid #4a90e2";
+    });
+    content.addEventListener("blur", () => {
+      content.contentEditable = false;
+      container.classList.remove("editing");
+      content.style.cursor = "grab";
+      element.text = content.innerText;
+      updateElementVisuals(container, element);
+      saveHistory();
+    });
+  }
+
+  container.addEventListener("mousedown", (e) => {
+    if (e.target.classList.contains("resize-handle")) return;
+    if (content.isContentEditable) return;
+    e.stopPropagation();
+    selectElement(element.id);
+    const r = container.getBoundingClientRect();
+    dragOffsetX = e.clientX - r.left;
+    dragOffsetY = e.clientY - r.top;
+    isDragging = true;
+    activeDOMElement = container;
+  });
+}
+
+/* ===================== 4. CREATION & LOGIC ===================== */
+function createElement(type) {
+  const defaults = {
+    rectangle: { w: 100, h: 100, bg: "#4a90e2" },
+    ellipse: { w: 100, h: 100, bg: "#ea758b" },
+    line: { w: 150, h: 5, bg: "#333" },
+    text: { w: 200, h: 40, bg: "transparent" },
+  };
+  const d = defaults[type];
+
+  const element = {
+    id: generateID(),
+    type,
+    x: 100,
+    y: 100,
+    width: d.w,
+    height: d.h,
+    backgroundColor: d.bg,
+    rotate: 0,
+    opacity: 1,
+    borderWidth: 0,
+    borderColor: "#000000",
+    shadowBlur: 0,
+    shadowColor: "#000000",
+    text: type === "text" ? "Double click" : "",
+    fontSize: 16,
+    color: "#333333",
+    textAlign: "left",
+    fontFamily: "Inter, sans-serif",
   };
 
-  attach('[data-prop="x"]', "x");
-  attach('[data-prop="y"]', "y");
-  attach('[data-prop="width"]', "width");
-  attach('[data-prop="height"]', "height");
-  attach('[data-prop="rotate"]', "rotate");
-  attach('[data-prop="backgroundColor"]', "backgroundColor");
-  attach('[data-prop="fontSize"]', "fontSize");
-  attach('[data-prop="color"]', "color");
-  attach('[data-prop="textAlign"]', "textAlign");
-}
-
-/* ===================== 2. SHORTCUTS & ACTIONS ===================== */
-
-function initKeyboardShortcuts() {
-  document.addEventListener("keydown", (e) => {
-    // Ignore if typing in an input
-    if (e.target.matches("input, textarea, [contenteditable]")) return;
-
-    const id = editorState.selectedElementId;
-    if (!id) return;
-
-    const element = editorState.elements.find((el) => el.id === id);
-    const domEl = getEl(`.canvas > [data-id="${id}"]`);
-    if (!element || !domEl) return;
-
-    const step = e.shiftKey ? 10 : 1; // Shift = Fast Move
-
-    switch (e.key) {
-      case "ArrowUp":
-        element.y -= step;
-        domEl.style.top = element.y + "px";
-        renderProperties();
-        e.preventDefault();
-        break;
-      case "ArrowDown":
-        element.y += step;
-        domEl.style.top = element.y + "px";
-        renderProperties();
-        e.preventDefault();
-        break;
-      case "ArrowLeft":
-        element.x -= step;
-        domEl.style.left = element.x + "px";
-        renderProperties();
-        e.preventDefault();
-        break;
-      case "ArrowRight":
-        element.x += step;
-        domEl.style.left = element.x + "px";
-        renderProperties();
-        e.preventDefault();
-        break;
-      case "Escape":
-        clearSelection();
-        break;
-      case "Delete":
-      case "Backspace":
-        domEl.remove();
-        editorState.elements = editorState.elements.filter(
-          (el) => el.id !== id,
-        );
-        clearSelection();
-        renderLayers();
-        break;
-      case "d":
-      case "D":
-        if (e.ctrlKey || e.metaKey) {
-          e.preventDefault();
-          duplicateElement(element);
-        }
-        break;
-    }
-  });
-}
-
-function duplicateElement(sourceElement) {
-  const newElement = { ...sourceElement };
-  newElement.id = generateID();
-  newElement.x += 20;
-  newElement.y += 20;
-
-  editorState.elements.push(newElement);
-  renderElement(newElement);
-  selectElement(newElement.id);
+  editorState.elements.push(element);
+  renderElement(element);
+  selectElement(element.id);
   renderLayers();
-}
-
-/* ===================== 3. EXPORT LOGIC ===================== */
-function initExportButtons() {
-  const btnJson = getEl("#btn-export-json");
-  if (btnJson) {
-    btnJson.addEventListener("click", () => {
-      const dataStr =
-        "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(editorState.elements));
-      const a = document.createElement("a");
-      a.href = dataStr;
-      a.download = "design.json";
-      a.click();
-    });
-  }
-
-  const btnPng = getEl("#btn-export-png");
-  if (btnPng) {
-    btnPng.addEventListener("click", () => {
-      const tempCanvas = document.createElement("canvas");
-      const ctx = tempCanvas.getContext("2d");
-      tempCanvas.width = 800;
-      tempCanvas.height = 500;
-
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-
-      editorState.elements.forEach((el) => {
-        ctx.save();
-        const cx = el.x + el.width / 2;
-        const cy = el.y + el.height / 2;
-
-        ctx.translate(cx, cy);
-        ctx.rotate(((el.rotate || 0) * Math.PI) / 180);
-        ctx.translate(-cx, -cy);
-
-        if (el.type === "text") {
-          ctx.fillStyle = el.color || "#333333";
-          ctx.font = `${el.fontSize || 16}px Inter, sans-serif`;
-          ctx.textBaseline = "top";
-
-          let xPos = el.x;
-          if (el.textAlign === "center") xPos = el.x + el.width / 2;
-          if (el.textAlign === "right") xPos = el.x + el.width;
-
-          ctx.textAlign = el.textAlign || "left";
-          ctx.fillText(el.text || "", xPos, el.y);
-        } else if (el.type === "ellipse") {
-          ctx.fillStyle = el.backgroundColor || "transparent";
-          ctx.beginPath();
-          ctx.ellipse(cx, cy, el.width / 2, el.height / 2, 0, 0, 2 * Math.PI);
-          ctx.fill();
-        } else {
-          ctx.fillStyle = el.backgroundColor || "transparent";
-          ctx.fillRect(el.x, el.y, el.width, el.height);
-        }
-        ctx.restore();
-      });
-
-      const a = document.createElement("a");
-      a.download = "design.png";
-      a.href = tempCanvas.toDataURL();
-      a.click();
-    });
-  }
-}
-
-/* ===================== 4. CORE ELEMENT LOGIC ===================== */
-const canvas = getEl(".canvas");
-
-if (canvas) {
-  canvas.addEventListener("mousedown", (e) => {
-    if (e.target === canvas) clearSelection();
-  });
-}
-
-document.addEventListener("mousemove", (e) => {
-  if (
-    isResizing ||
-    !isDragging ||
-    !editorState.selectedElementId ||
-    !activeDOMElement
-  )
-    return;
-
-  const element = editorState.elements.find(
-    (el) => el.id === editorState.selectedElementId,
-  );
-  if (!element) return;
-
-  const rect = canvas.getBoundingClientRect();
-  let newX = e.clientX - rect.left - dragOffsetX;
-  let newY = e.clientY - rect.top - dragOffsetY;
-
-  newX = Math.max(0, Math.min(newX, rect.width - element.width));
-  newY = Math.max(0, Math.min(newY, rect.height - element.height));
-
-  element.x = newX;
-  element.y = newY;
-  activeDOMElement.style.left = newX + "px";
-  activeDOMElement.style.top = newY + "px";
-
-  renderProperties();
-});
-
-document.addEventListener("mouseup", () => {
-  isDragging = false;
-  activeDOMElement = null;
-});
-
-/* ===================== SELECTION & LAYERS ===================== */
-function clearSelection() {
-  document.querySelectorAll(".selected").forEach((el) => {
-    el.classList.remove("selected");
-    el.querySelectorAll(".resize-handle").forEach((h) => h.remove());
-  });
-
-  editorState.selectedElementId = null;
-  isDragging = false;
-  isResizing = false;
-  activeDOMElement = null;
-
-  document
-    .querySelectorAll(".layers-list li")
-    .forEach((li) => li.classList.remove("active"));
-  document
-    .querySelectorAll(".toolbar .tool button")
-    .forEach((btn) => btn.classList.remove("active"));
-
-  document.querySelectorAll(".icon-label").forEach((span) => {
-    if (span.innerText === "T") span.innerText = "H";
-  });
-
-  renderProperties();
+  saveHistory();
 }
 
 function selectElement(id) {
   if (editorState.selectedElementId === id) return;
   clearSelection();
   editorState.selectedElementId = id;
-
   const domEl = getEl(`.canvas > [data-id="${id}"]`);
   if (!domEl) return;
-
   domEl.classList.add("selected");
 
   ["top-left", "top-right", "bottom-left", "bottom-right"].forEach((pos) => {
@@ -382,45 +343,260 @@ function selectElement(id) {
     domEl.appendChild(h);
     attachResizeLogic(h, id, pos);
   });
-
   renderLayers();
   renderProperties();
 }
 
-/* ===================== CENTRALIZED LAYERS LOGIC ===================== */
+function clearSelection() {
+  document.querySelectorAll(".selected").forEach((el) => {
+    el.classList.remove("selected");
+    el.querySelectorAll(".resize-handle").forEach((h) => h.remove());
+  });
+  editorState.selectedElementId = null;
+  renderLayers();
+  renderProperties();
+}
+
+/* ===================== 5. SHORTCUTS & EXPORT ===================== */
+function initKeyboardShortcuts() {
+  document.addEventListener("keydown", (e) => {
+    if (e.target.matches("input, textarea, [contenteditable]")) return;
+
+    if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+      e.preventDefault();
+      undo();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "y") {
+      e.preventDefault();
+      redo();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "c") {
+      const id = editorState.selectedElementId;
+      if (id)
+        editorState.clipboard = JSON.parse(
+          JSON.stringify(editorState.elements.find((x) => x.id === id)),
+        );
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "v") {
+      if (editorState.clipboard) {
+        const newEl = JSON.parse(JSON.stringify(editorState.clipboard));
+        newEl.id = generateID();
+        newEl.x += 20;
+        newEl.y += 20;
+        if (newEl.x + newEl.width > 800) newEl.x = 800 - newEl.width;
+        if (newEl.y + newEl.height > 500) newEl.y = 500 - newEl.height;
+        editorState.elements.push(newEl);
+        renderElement(newEl);
+        selectElement(newEl.id);
+        renderLayers();
+        saveHistory();
+      }
+    }
+    if (e.key === "Delete" || e.key === "Backspace") {
+      const id = editorState.selectedElementId;
+      if (id) {
+        getEl(`.canvas > [data-id="${id}"]`).remove();
+        editorState.elements = editorState.elements.filter(
+          (el) => el.id !== id,
+        );
+        clearSelection();
+        renderLayers();
+        saveHistory();
+      }
+    }
+    if (editorState.selectedElementId) {
+      const el = editorState.elements.find(
+        (x) => x.id === editorState.selectedElementId,
+      );
+      const dom = getEl(`.canvas > [data-id="${el.id}"]`);
+      // ✅ FIX: 5px Step (Requirement #6)
+      const step = e.shiftKey ? 10 : 5;
+
+      if (e.key === "ArrowUp") el.y = Math.max(0, el.y - step);
+      if (e.key === "ArrowDown") el.y = Math.min(500 - el.height, el.y + step);
+      if (e.key === "ArrowLeft") el.x = Math.max(0, el.x - step);
+      if (e.key === "ArrowRight") el.x = Math.min(800 - el.width, el.x + step);
+      if (e.key.startsWith("Arrow")) {
+        e.preventDefault();
+        updateElementVisuals(dom, el);
+        renderProperties();
+      }
+    }
+  });
+  document.addEventListener("keyup", (e) => {
+    if (e.key.startsWith("Arrow") && editorState.selectedElementId)
+      saveHistory();
+  });
+}
+
+// ✅ NEW: LAYER REORDERING LOGIC (Requirement #4)
+function moveLayer(id, direction) {
+  const index = editorState.elements.findIndex((el) => el.id === id);
+  if (index === -1) return;
+
+  if (direction === "up" && index < editorState.elements.length - 1) {
+    // Swap with next (visually up = higher Z index)
+    [editorState.elements[index], editorState.elements[index + 1]] = [
+      editorState.elements[index + 1],
+      editorState.elements[index],
+    ];
+  } else if (direction === "down" && index > 0) {
+    // Swap with prev
+    [editorState.elements[index], editorState.elements[index - 1]] = [
+      editorState.elements[index - 1],
+      editorState.elements[index],
+    ];
+  }
+
+  // Re-render EVERYTHING to update Z-indices
+  getEl(".canvas").innerHTML = "";
+  editorState.elements.forEach((el) => renderElement(el));
+
+  // Restore Selection
+  if (editorState.selectedElementId) {
+    const domEl = getEl(
+      `.canvas > [data-id="${editorState.selectedElementId}"]`,
+    );
+    if (domEl) domEl.classList.add("selected");
+    // Re-add handles
+    selectElement(editorState.selectedElementId);
+  }
+
+  renderLayers();
+  saveHistory();
+}
+
 function renderLayers() {
   const list = getEl(".layers-list");
   if (!list) return;
-
   list.innerHTML = "";
 
+  // Render list in reverse order (Top element first)
   editorState.elements
     .slice()
     .reverse()
-    .forEach((el, reverseIndex) => {
-      const realIndex = editorState.elements.length - 1 - reverseIndex;
-
+    .forEach((el) => {
       const li = document.createElement("li");
+      li.style.display = "flex";
+      li.style.justifyContent = "space-between";
+      li.style.alignItems = "center";
+
+      const labelSpan = document.createElement("span");
       const typeLabel = el.type.charAt(0).toUpperCase() + el.type.slice(1);
-      li.innerText = `${typeLabel} ${realIndex + 1}`;
+      labelSpan.innerText = typeLabel;
+
+      // Container for Arrows
+      const btnGroup = document.createElement("div");
+      btnGroup.style.display = "flex";
+      btnGroup.style.gap = "4px";
+
+      const btnUp = document.createElement("button");
+      btnUp.innerText = "↑";
+      btnUp.title = "Bring Forward";
+      btnUp.style.padding = "2px 6px";
+      btnUp.style.fontSize = "10px";
+      btnUp.style.cursor = "pointer";
+      btnUp.style.background = "rgba(255,255,255,0.1)";
+      btnUp.style.border = "none";
+      btnUp.style.color = "white";
+      btnUp.onclick = (e) => {
+        e.stopPropagation();
+        moveLayer(el.id, "up");
+      };
+
+      const btnDown = document.createElement("button");
+      btnDown.innerText = "↓";
+      btnDown.title = "Send Backward";
+      btnDown.style.padding = "2px 6px";
+      btnDown.style.fontSize = "10px";
+      btnDown.style.cursor = "pointer";
+      btnDown.style.background = "rgba(255,255,255,0.1)";
+      btnDown.style.border = "none";
+      btnDown.style.color = "white";
+      btnDown.onclick = (e) => {
+        e.stopPropagation();
+        moveLayer(el.id, "down");
+      };
+
+      btnGroup.appendChild(btnUp);
+      btnGroup.appendChild(btnDown);
+
+      li.appendChild(labelSpan);
+      li.appendChild(btnGroup);
+
       li.dataset.id = el.id;
-
       li.classList.add(`type-${el.type}`);
-
-      if (el.id === editorState.selectedElementId) {
-        li.classList.add("active");
-      }
+      if (el.id === editorState.selectedElementId) li.classList.add("active");
 
       li.addEventListener("mousedown", (e) => {
-        e.stopPropagation();
-        selectElement(el.id);
+        // Only select if not clicking buttons
+        if (e.target.tagName !== "BUTTON") {
+          e.stopPropagation();
+          selectElement(el.id);
+        }
       });
-
       list.appendChild(li);
     });
 }
 
-/* ===================== RESIZE LOGIC ===================== */
+// ✅ NEW: HTML EXPORT (Requirement #8)
+function exportToHTML() {
+  let htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enigma Design Export</title>
+    <style>
+        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
+        .canvas { position: relative; width: 800px; height: 500px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; }
+        .element { position: absolute; box-sizing: border-box; display: flex; align-items: center; }
+    </style>
+</head>
+<body>
+    <div class="canvas">
+`;
+
+  editorState.elements.forEach((el) => {
+    let styles = `
+            left: ${el.x}px; top: ${el.y}px; 
+            width: ${el.width}px; height: ${el.height}px; 
+            transform: rotate(${el.rotate || 0}deg);
+            background-color: ${el.backgroundColor || "transparent"};
+            opacity: ${el.opacity !== undefined ? el.opacity : 1};
+            z-index: ${editorState.elements.indexOf(el)};
+        `;
+
+    if (el.type === "ellipse") styles += `border-radius: 50%;`;
+    if (el.shadowBlur > 0)
+      styles += `filter: drop-shadow(0px 4px ${el.shadowBlur}px ${el.shadowColor});`;
+    if (el.borderWidth > 0)
+      styles += `border: ${el.borderWidth}px solid ${el.borderColor};`;
+
+    let content = "";
+    if (el.type === "text") {
+      styles += `
+                font-size: ${el.fontSize}px; color: ${el.color}; 
+                text-align: ${el.textAlign}; font-family: ${el.fontFamily};
+                justify-content: ${el.textAlign === "center" ? "center" : el.textAlign === "right" ? "flex-end" : "flex-start"};
+            `;
+      content = el.text;
+    }
+
+    htmlContent += `        <div class="element" style="${styles}">${content}</div>\n`;
+  });
+
+  htmlContent += `    </div>\n</body>\n</html>`;
+
+  const blob = new Blob([htmlContent], { type: "text/html" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "design.html";
+  a.click();
+}
+
 function attachResizeLogic(handle, id, position) {
   handle.addEventListener("mousedown", (e) => {
     e.stopPropagation();
@@ -428,28 +604,22 @@ function attachResizeLogic(handle, id, position) {
     isResizing = true;
     isDragging = false;
     activeDOMElement = null;
-
     const element = editorState.elements.find((el) => el.id === id);
-    if (!element) return;
-    const domEl = getEl(`.canvas > [data-id="${id}"]`);
-
     const startX = e.clientX;
     const startY = e.clientY;
     const sW = element.width;
     const sH = element.height;
     const sX = element.x;
     const sY = element.y;
-    const rect = canvas.getBoundingClientRect();
+    const rect = getEl(".canvas").getBoundingClientRect();
 
     function onMove(e) {
-      if (!isResizing) return;
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
       let nW = sW,
         nH = sH,
         nX = sX,
         nY = sY;
-
       if (position.includes("right")) nW = sW + dx;
       if (position.includes("left")) {
         nW = sW - dx;
@@ -460,22 +630,6 @@ function attachResizeLogic(handle, id, position) {
         nH = sH - dy;
         nY = sY + dy;
       }
-
-      if (nX < 0) {
-        nX = 0;
-        nW = sX + sW;
-      }
-      if (nY < 0) {
-        nY = 0;
-        nH = sY + sH;
-      }
-      if (nX + nW > rect.width) {
-        if (position.includes("right")) nW = rect.width - nX;
-      }
-      if (nY + nH > rect.height) {
-        if (position.includes("bottom")) nH = rect.height - nY;
-      }
-
       if (nW < 20) {
         nW = 20;
         if (position.includes("left")) nX = sX + sW - 20;
@@ -485,162 +639,76 @@ function attachResizeLogic(handle, id, position) {
         if (position.includes("top")) nY = sY + sH - 5;
       }
 
-      if (element.type === "line") {
-        nH = sH;
-        nY = sY;
+      if (nX < 0) {
+        nW += nX;
+        nX = 0;
       }
+      if (nY < 0) {
+        nH += nY;
+        nY = 0;
+      }
+      if (nX + nW > rect.width) nW = rect.width - nX;
+      if (nY + nH > rect.height) nH = rect.height - nY;
 
       element.x = nX;
       element.y = nY;
       element.width = nW;
       element.height = nH;
-      if (domEl) {
-        domEl.style.left = nX + "px";
-        domEl.style.top = nY + "px";
-        domEl.style.width = nW + "px";
-        domEl.style.height = nH + "px";
-      }
+      updateElementVisuals(getEl(`.canvas > [data-id="${id}"]`), element);
       renderProperties();
     }
-
     function onUp() {
       isResizing = false;
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseup", onUp);
+      saveHistory();
     }
     document.addEventListener("mousemove", onMove);
     document.addEventListener("mouseup", onUp);
   });
 }
 
-/* ===================== RENDER ELEMENT ===================== */
-function renderElement(element) {
-  const div = document.createElement("div");
-  const styles = {
-    position: "absolute",
-    left: element.x + "px",
-    top: element.y + "px",
-    width: element.width + "px",
-    height: element.height + "px",
-    backgroundColor: element.backgroundColor || "#4a90e2",
-    transform: `rotate(${element.rotate || 0}deg)`,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: (element.fontSize || 16) + "px",
-    color: element.color || "#333",
-    userSelect: "none",
-    boxSizing: "border-box",
-    overflow: "visible",
-  };
+document.addEventListener("mousemove", (e) => {
+  if (isResizing || !isDragging || !activeDOMElement) return;
+  const element = editorState.elements.find(
+    (el) => el.id === editorState.selectedElementId,
+  );
+  if (!element) return;
+  const rect = getEl(".canvas").getBoundingClientRect();
+  let newX = e.clientX - rect.left - dragOffsetX;
+  let newY = e.clientY - rect.top - dragOffsetY;
+  newX = Math.max(0, Math.min(newX, rect.width - element.width));
+  newY = Math.max(0, Math.min(newY, rect.height - element.height));
+  element.x = newX;
+  element.y = newY;
+  updateElementVisuals(activeDOMElement, element);
+  renderProperties();
+});
 
-  if (element.type === "ellipse") styles.borderRadius = "50%";
-  else if (element.type === "line") {
-    styles.height = "5px";
-    div.style.height = "5px";
-    styles.borderRadius = "2px";
-  } else if (element.type === "text") {
-    styles.backgroundColor = "transparent";
-    styles.border = "1px dashed #ccc";
-    styles.padding = "4px";
+document.addEventListener("mouseup", () => {
+  if (isDragging) saveHistory();
+  isDragging = false;
+  activeDOMElement = null;
+});
 
-    const align = element.textAlign || "left";
-    styles.textAlign = align;
-    styles.justifyContent =
-      align === "center"
-        ? "center"
-        : align === "right"
-          ? "flex-end"
-          : "flex-start";
-
-    div.innerText = element.text || "Double click";
-  }
-
-  Object.assign(div.style, styles);
-  div.dataset.id = element.id;
-  canvas.appendChild(div);
-
-  if (element.type === "text") {
-    div.addEventListener("dblclick", (e) => {
-      e.stopPropagation();
-      div.contentEditable = true;
-      div.focus();
-      div.style.userSelect = "text";
-      div.style.cursor = "text";
-      div.style.border = "1px solid #4a90e2";
-      const r = document.createRange();
-      r.selectNodeContents(div);
-      const s = window.getSelection();
-      s.removeAllRanges();
-      s.addRange(r);
-    });
-    div.addEventListener("blur", () => {
-      div.contentEditable = false;
-      div.style.userSelect = "none";
-      div.style.cursor = "grab";
-      div.style.border = "1px dashed #ccc";
-      element.text = div.innerText;
-    });
-  }
-
-  div.addEventListener("mousedown", (e) => {
-    if (e.target.classList.contains("resize-handle")) return;
-    if (div.isContentEditable) return;
-    e.stopPropagation();
-    selectElement(element.id);
-    const r = div.getBoundingClientRect();
-    dragOffsetX = e.clientX - r.left;
-    dragOffsetY = e.clientY - r.top;
-    isDragging = true;
-    activeDOMElement = div;
-  });
-}
-
-/* ===================== CREATE ELEMENT ===================== */
-function createElement(type) {
-  const defaults = {
-    rectangle: { w: 100, h: 100 },
-    ellipse: { w: 100, h: 100 },
-    line: { w: 150, h: 5 },
-    text: { w: 200, h: 40 },
-  };
-  const size = defaults[type];
-
-  const element = {
-    id: generateID(),
-    type,
-    x: 100,
-    y: 100,
-    width: size.w,
-    height: size.h,
-    backgroundColor: "#4a90e2",
-    text: type === "text" ? "Double click" : "",
-    rotate: 0,
-    fontSize: 16,
-    color: "#333333",
-    textAlign: "left",
-  };
-
-  editorState.elements.push(element);
-  renderElement(element);
-
-  selectElement(element.id);
-  renderLayers();
-
-  document.querySelectorAll(".toolbar .tool button").forEach((btn) => {
-    btn.classList.remove("active");
-    if (btn.dataset.tool === type) btn.classList.add("active");
-  });
-}
-
-/* ===================== INIT ===================== */
+getEl("#btn-export-png").addEventListener("click", () => {
+  alert("Install html2canvas!");
+});
 ["rectangle", "ellipse", "line", "text"].forEach((tool) => {
   const btn = getEl(`[data-tool="${tool}"]`);
   if (btn) btn.addEventListener("click", () => createElement(tool));
 });
+getEl(".canvas-wrapper").addEventListener("mousedown", (e) => {
+  if (
+    e.target.classList.contains("canvas-wrapper") ||
+    e.target.classList.contains("canvas")
+  )
+    clearSelection();
+});
 
-console.log("🚀 Initializing listeners...");
 initPropertyListeners();
 initKeyboardShortcuts();
-initExportButtons();
-console.log("✅ Initialization Complete");
+loadFromLocal();
+saveHistory();
+
+console.log("✅ Enigma vFinal Ready!");

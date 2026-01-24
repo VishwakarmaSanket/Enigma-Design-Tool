@@ -1,10 +1,8 @@
 @charset "UTF-8";
-
 @font-face {
   font-family: Inter;
   src: url(../fonts/Inter_24pt-Regular.ttf);
 }
-
 html,
 body {
   height: 100%;
@@ -43,7 +41,6 @@ body {
   border-right: 1px solid var(--border-color);
   /* Clean Flex container for the list */
 }
-
 .sidebar-left .layers-panel {
   display: flex;
   flex-direction: column;
@@ -51,7 +48,6 @@ body {
   background: var(--bg-panel);
   /* Header matching Properties Panel */
 }
-
 .sidebar-left .layers-panel h3 {
   font-size: 11px;
   font-weight: 700;
@@ -62,14 +58,12 @@ body {
   margin: 0;
   border-bottom: 1px solid var(--border-color);
 }
-
 .sidebar-left .layers-panel .layers-list {
   flex: 1;
   overflow-y: auto;
   padding: 0;
   margin: 0;
 }
-
 .sidebar-left .layers-panel .layers-list li {
   display: flex;
   align-items: center;
@@ -84,17 +78,14 @@ body {
   /* Dynamic Icon Types */
   /* Active Icons */
 }
-
 .sidebar-left .layers-panel .layers-list li:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
-
 .sidebar-left .layers-panel .layers-list li.active {
   background-color: var(--active-item-bg);
   color: #ffffff;
   border-left-color: var(--primary);
 }
-
 .sidebar-left .layers-panel .layers-list li::before {
   content: "";
   display: inline-block;
@@ -105,11 +96,9 @@ body {
   border-radius: 2px;
   transition: all 0.2s;
 }
-
 .sidebar-left .layers-panel .layers-list li.type-ellipse::before {
   border-radius: 50%;
 }
-
 .sidebar-left .layers-panel .layers-list li.type-text::before {
   content: "T";
   border: none;
@@ -119,7 +108,6 @@ body {
   line-height: 12px;
   color: var(--text-muted);
 }
-
 .sidebar-left .layers-panel .layers-list li.type-line::before {
   height: 2px;
   border: none;
@@ -127,18 +115,15 @@ body {
   border-radius: 0;
   transform: rotate(-45deg);
 }
-
 .sidebar-left .layers-panel .layers-list li.active::before {
   border-color: #ffffff;
   background: var(--primary);
   border: 2px solid var(--primary);
 }
-
 .sidebar-left .layers-panel .layers-list li.active.type-text::before {
   color: var(--primary);
   background: transparent;
 }
-
 .sidebar-left .layers-panel .layers-list li.active.type-line::before {
   background-color: var(--primary);
 }
@@ -148,7 +133,6 @@ body {
   border-left: 1px solid var(--border-color);
   padding: 0;
 }
-
 .sidebar-right .hidden {
   display: none !important;
 }
@@ -181,21 +165,18 @@ body {
   /* App Name */
   /* Optional: File Name Tag (lighter text) */
 }
-
 .app-header img {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   display: block;
   border-radius: 4px;
 }
-
 .app-header span {
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-main);
   letter-spacing: -0.3px;
 }
-
 .app-header .file-tag {
   font-weight: 400;
   color: var(--text-muted);
@@ -216,7 +197,6 @@ body {
   background-size: 20px 20px;
   /* The White "Paper" */
 }
-
 .canvas-wrapper .canvas {
   position: relative;
   width: 800px;
@@ -230,27 +210,24 @@ body {
   overflow: visible;
   /* ================= SHAPES ================= */
 }
-
-.canvas-wrapper .canvas>div {
+.canvas-wrapper .canvas > div {
   position: absolute;
   box-sizing: border-box;
   cursor: grab;
   z-index: 10;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: visible !important;
   /* ================= SELECTED STATE ================= */
 }
-
-.canvas-wrapper .canvas>div:active {
+.canvas-wrapper .canvas > div:active {
   cursor: grabbing;
 }
-
-.canvas-wrapper .canvas>div.selected {
+.canvas-wrapper .canvas > div.selected {
   z-index: 20;
   /* Pink/Reddish Dashed Selection Outline */
   outline: 2px dashed #ea758b;
@@ -260,8 +237,7 @@ body {
   /* 3. Positioning (Centered on Corner) */
   /* Offset = -7px (half of 14px width) to center it */
 }
-
-.canvas-wrapper .canvas>div.selected .resize-handle {
+.canvas-wrapper .canvas > div.selected .resize-handle {
   /* 1. Visual Style */
   width: 14px;
   height: 14px;
@@ -281,8 +257,7 @@ body {
   /* 2. INVISIBLE HIT AREA (Magic UX Fix) */
   /* Creates a larger click zone around the small visual handle */
 }
-
-.canvas-wrapper .canvas>div.selected .resize-handle::after {
+.canvas-wrapper .canvas > div.selected .resize-handle::after {
   content: "";
   position: absolute;
   top: -10px;
@@ -291,26 +266,22 @@ body {
   bottom: -10px;
   border-radius: 50%;
 }
-
-.canvas-wrapper .canvas>div.selected .resize-handle.top-left {
+.canvas-wrapper .canvas > div.selected .resize-handle.top-left {
   top: -7px;
   left: -7px;
   cursor: nwse-resize;
 }
-
-.canvas-wrapper .canvas>div.selected .resize-handle.top-right {
+.canvas-wrapper .canvas > div.selected .resize-handle.top-right {
   top: -7px;
   right: -7px;
   cursor: nesw-resize;
 }
-
-.canvas-wrapper .canvas>div.selected .resize-handle.bottom-left {
+.canvas-wrapper .canvas > div.selected .resize-handle.bottom-left {
   bottom: -7px;
   left: -7px;
   cursor: nesw-resize;
 }
-
-.canvas-wrapper .canvas>div.selected .resize-handle.bottom-right {
+.canvas-wrapper .canvas > div.selected .resize-handle.bottom-right {
   bottom: -7px;
   right: -7px;
   cursor: nwse-resize;
@@ -338,14 +309,12 @@ body {
   /* Strong shadow to lift it off the canvas */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-
 .toolbar .tool {
   position: relative;
   display: flex;
   justify-content: center;
   /* --- TOOLTIP --- */
 }
-
 .toolbar .tool button {
   display: flex;
   align-items: center;
@@ -354,8 +323,8 @@ body {
   height: 40px;
   padding: 0;
   -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -367,27 +336,23 @@ body {
   /* Hover State */
   /* Active State */
 }
-
 .toolbar .tool button svg {
   display: block;
   /* 'currentColor' allows SVG to take the text color */
   stroke: currentColor;
 }
-
 .toolbar .tool button:hover {
   /* Slightly lighter background */
   background-color: rgba(255, 255, 255, 0.1);
   /* Brighter icon on hover */
   color: var(--text-main);
 }
-
 .toolbar .tool button.active {
   /* Blue Transparent BG */
   background-color: var(--active-item-bg);
   /* Enigma Blue Icon */
   color: var(--primary);
 }
-
 .toolbar .tool h3 {
   position: absolute;
   bottom: 100%;
@@ -408,7 +373,6 @@ body {
   visibility: hidden;
   transition: opacity 0.2s, transform 0.2s;
 }
-
 .toolbar .tool h3::after {
   content: "";
   position: absolute;
@@ -418,7 +382,6 @@ body {
   border: 4px solid transparent;
   border-top-color: #000;
 }
-
 .toolbar .tool:hover h3 {
   opacity: 1;
   visibility: visible;
@@ -440,7 +403,6 @@ body {
   /* --- SCROLLABLE LIST --- */
   /* Optional: Empty State for Layers */
 }
-
 .layers-panel h3 {
   font-size: 11px;
   font-weight: 700;
@@ -454,7 +416,6 @@ body {
   border-bottom: 1px solid var(--border-color);
   background-color: var(--bg-panel);
 }
-
 .layers-panel .layers-list {
   flex: 1;
   overflow-y: auto;
@@ -463,21 +424,17 @@ body {
   /* Scrollbar Styling (Dark Theme) */
   /* --- LAYER ITEM --- */
 }
-
 .layers-panel .layers-list::-webkit-scrollbar {
   width: 6px;
 }
-
 .layers-panel .layers-list::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.1);
 }
-
 .layers-panel .layers-list::-webkit-scrollbar-thumb {
   background: #475569;
   /* Slate-600 */
   border-radius: 3px;
 }
-
 .layers-panel .layers-list li {
   display: flex;
   align-items: center;
@@ -502,13 +459,11 @@ body {
   /* 3. Line Icon */
   /* --- ACTIVE STATE FOR ICONS --- */
 }
-
 .layers-panel .layers-list li:hover {
   /* Subtle Light Overlay */
   background-color: rgba(255, 255, 255, 0.05);
   color: #fff;
 }
-
 .layers-panel .layers-list li.active {
   /* Blue Transparent Background */
   background-color: var(--active-item-bg);
@@ -517,7 +472,6 @@ body {
   /* Blue Accent Border */
   border-left-color: var(--primary);
 }
-
 .layers-panel .layers-list li::before {
   content: "";
   display: inline-block;
@@ -531,12 +485,10 @@ body {
   /* Square corners */
   background: transparent;
 }
-
 .layers-panel .layers-list li.type-ellipse::before {
   border-radius: 50%;
   /* Make it round */
 }
-
 .layers-panel .layers-list li.type-text::before {
   content: "T";
   /* Show letter T instead of box */
@@ -549,7 +501,6 @@ body {
   text-align: center;
   color: var(--text-muted);
 }
-
 .layers-panel .layers-list li.type-line::before {
   height: 2px;
   /* Flatten it */
@@ -559,20 +510,16 @@ body {
   transform: rotate(-45deg);
   /* Diagonal line */
 }
-
 .layers-panel .layers-list li.active::before {
   border-color: var(--primary);
 }
-
 .layers-panel .layers-list li.active.type-text::before {
   color: var(--primary);
   /* Blue "T" */
 }
-
 .layers-panel .layers-list li.active.type-line::before {
   background-color: var(--primary);
 }
-
 .layers-panel:empty::after {
   content: "No layers";
   display: block;
@@ -592,19 +539,21 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* Dark Slate Background */
   background: var(--bg-panel);
   font-family: "Inter", sans-serif;
-  /* --- HEADER --- */
+  /* 1. Hide scrollbars on the main container */
+  overflow: hidden;
+  /* --- HEADER (Fixed) --- */
   /* --- EMPTY STATE --- */
-  /* --- FORM LAYOUT --- */
+  /* --- FORM LAYOUT (Scrollable but Invisible Bar) --- */
 }
-
 .properties-panel .panel-header {
   padding: 16px;
   border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  z-index: 10;
 }
-
 .properties-panel .panel-header h3 {
   font-size: 11px;
   font-weight: 700;
@@ -613,7 +562,6 @@ body {
   color: var(--text-muted);
   margin: 0;
 }
-
 .properties-panel .empty-state {
   padding: 40px 20px;
   text-align: center;
@@ -621,225 +569,183 @@ body {
   font-size: 13px;
   font-style: italic;
 }
-
 .properties-panel .properties-form {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  /* Section Titles */
-  /* Divider Line */
-  /* Grid for X/Y and W/H inputs */
-  /* Wrapper for Inputs */
-  /* --- COLOR PICKER ROW --- */
-  /* =========================================
-     ✅ NEW: TYPOGRAPHY FIXES (DARK THEME) 
-     ========================================= */
-  /* 1. Alignment Dropdown (<select>) */
-  /* 2. Text Color Picker (Small Box) */
-  /* --- ACTION BUTTONS --- */
+  gap: 0px;
+  flex: 1;
+  /* 2. Enable Scrolling Logic */
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Force kill horizontal scroll */
+  padding-bottom: 40px;
+  /* 3. HIDE SCROLLBARS (Visual Only) */
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE / Edge Legacy */
+  -ms-overflow-style: none;
+  /* Chrome / Safari / Edge / Opera */
+  /* --- TYPOGRAPHY --- */
+  /* --- GRID SYSTEM --- */
+  /* --- INPUTS --- */
+  /* --- COLOR PICKER --- */
+  /* --- BUTTONS --- */
 }
-
+.properties-panel .properties-form::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  background: transparent;
+}
 .properties-panel .properties-form .section-label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-main);
-  margin-bottom: 4px;
-  margin-top: 4px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
 }
-
 .properties-panel .properties-form .separator {
-  height: 1px;
+  min-height: 1px;
   background: var(--border-color);
-  margin: 8px 0;
+  margin: 12px 0;
   width: 100%;
+  opacity: 0.5;
 }
-
 .properties-panel .properties-form .row-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  /* Ensure it fits container */
+  box-sizing: border-box;
 }
-
 .properties-panel .properties-form .input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
-  /* STANDARD NUMBER INPUTS */
+  width: 100%;
+  height: 32px;
 }
-
 .properties-panel .properties-form .input-wrapper .icon-label {
   position: absolute;
   left: 10px;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
-  font-weight: 600;
+  font-weight: 700;
   pointer-events: none;
   z-index: 2;
+  text-transform: uppercase;
 }
-
-.properties-panel .properties-form .input-wrapper input[type=number] {
+.properties-panel .properties-form .input-wrapper input[type=number],
+.properties-panel .properties-form .input-wrapper input[type=text],
+.properties-panel .properties-form .input-wrapper select {
   width: 100%;
-  padding: 6px 6px 6px 28px;
-  /* Room for label */
-  /* Dark Input Fields */
+  height: 100%;
+  padding: 0 8px 0 28px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 13px;
   color: var(--text-main);
   font-weight: 500;
-  transition: all 0.2s ease;
-  -moz-appearance: textfield;
+  outline: none;
+  transition: border 0.2s;
+  box-sizing: border-box;
+  /* Prevents padding from causing overflow */
 }
-
+.properties-panel .properties-form .input-wrapper input[type=number]:focus,
+.properties-panel .properties-form .input-wrapper input[type=text]:focus,
+.properties-panel .properties-form .input-wrapper select:focus {
+  border-color: var(--primary);
+  background: rgba(0, 0, 0, 0.3);
+}
 .properties-panel .properties-form .input-wrapper input[type=number]::-webkit-inner-spin-button,
 .properties-panel .properties-form .input-wrapper input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-.properties-panel .properties-form .input-wrapper input[type=number]:hover {
-  border-color: #64748b;
-  /* Slate-500 */
+.properties-panel .properties-form select {
+  padding-left: 10px !important;
+  cursor: pointer;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%2394a3b8" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 4px center;
 }
-
-.properties-panel .properties-form .input-wrapper input[type=number]:focus {
-  background: rgba(0, 0, 0, 0.4);
-  border-color: var(--primary);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-}
-
-.properties-panel .properties-form .color-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.properties-panel .properties-form .color-row label {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.properties-panel .properties-form .color-row .color-input-wrapper {
+.properties-panel .properties-form .color-input-wrapper {
   display: flex;
   align-items: center;
   gap: 8px;
   background: rgba(0, 0, 0, 0.2);
-  padding: 4px 8px 4px 4px;
+  padding: 4px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
   cursor: pointer;
-  transition: all 0.2s;
+  height: 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
-
-.properties-panel .properties-form .color-row .color-input-wrapper:hover {
-  background: rgba(0, 0, 0, 0.3);
-  border-color: #64748b;
+.properties-panel .properties-form .color-input-wrapper.full-width {
+  margin-bottom: 8px;
 }
-
-.properties-panel .properties-form .color-row .color-input-wrapper .color-value-text {
-  font-size: 12px;
+.properties-panel .properties-form .color-input-wrapper .color-value-text {
+  font-size: 11px;
   color: var(--text-main);
   font-family: monospace;
+  flex: 1;
+  padding-left: 8px;
 }
-
-.properties-panel .properties-form .color-row .color-input-wrapper input[type=color] {
+.properties-panel .properties-form .color-input-wrapper input[type=color] {
   -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
   border: none;
   background: none;
   width: 24px;
-  height: 24px;
+  height: 22px;
   cursor: pointer;
   padding: 0;
-}
-
-.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-.properties-panel .properties-form .color-row .color-input-wrapper input[type=color]::-webkit-color-swatch {
-  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
-
-.properties-panel .properties-form select {
-  width: 100%;
-  padding: 8px 12px;
-  /* Dark Background */
-  background-color: rgba(0, 0, 0, 0.2);
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  outline: none;
-  /* Remove default browser arrow and use custom styling if needed, 
-     but standard dark scrollbar is usually fine. */
-  /* Dropdown Options (Dark Mode) */
+.properties-panel .properties-form .color-input-wrapper input[type=color]::-webkit-color-swatch-wrapper {
+  padding: 0;
 }
-
-.properties-panel .properties-form select:hover {
-  border-color: #64748b;
+.properties-panel .properties-form .color-input-wrapper input[type=color]::-webkit-color-swatch {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
 }
-
-.properties-panel .properties-form select:focus {
-  border-color: var(--primary);
-}
-
-.properties-panel .properties-form select option {
-  background-color: var(--bg-panel);
-  color: var(--text-main);
-}
-
-.properties-panel .properties-form input[type=color] {
-  background: transparent;
-  border: none;
-  height: 32px;
-  width: 100%;
-  cursor: pointer;
-}
-
 .properties-panel .properties-form .action-buttons {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 10px;
 }
-
 .properties-panel .properties-form .action-buttons button {
-  width: 100%;
-  padding: 8px 12px;
+  height: 36px;
   border-radius: 6px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: "Inter", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
 }
-
 .properties-panel .properties-form .action-buttons .btn-primary {
   background-color: var(--primary);
   color: white;
-  border: 1px solid transparent;
 }
-
-.properties-panel .properties-form .action-buttons .btn-primary:hover {
-  background-color: var(--primary-hover);
-}
-
 .properties-panel .properties-form .action-buttons .btn-secondary {
   background-color: transparent;
   color: var(--text-main);
-  border: 1px solid var(--border-color);
+  border-color: var(--border-color);
 }
-
-.properties-panel .properties-form .action-buttons .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: #64748b;
+.properties-panel .properties-form .action-buttons button:hover {
+  opacity: 0.9;
 }
 
 /* =========================================
@@ -868,6 +774,4 @@ body {
   --header-height: 50px;
   --sidebar-width: 240px;
   --layers-panel-width: 200px;
-}
-
-/*# sourceMappingURL=main.css.map */
+}/*# sourceMappingURL=main.css.map */
