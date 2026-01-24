@@ -172,9 +172,15 @@ function initPropertyListeners() {
   const btnUndo = getEl("#btn-undo");
   if (btnUndo) btnUndo.addEventListener("click", undo);
 
-  // ✅ NEW: Export HTML Button Listener
+  // ✅ EXPORT BUTTON LISTENERS
   const btnHtml = getEl("#btn-export-html");
   if (btnHtml) btnHtml.addEventListener("click", exportToHTML);
+
+  const btnJson = getEl("#btn-export-json");
+  if (btnJson) btnJson.addEventListener("click", exportToJSON);
+
+  const btnPng = getEl("#btn-export-png");
+  if (btnPng) btnPng.addEventListener("click", exportToPNG);
 }
 
 /* ===================== 3. RENDERING ENGINE ===================== */
@@ -357,7 +363,7 @@ function clearSelection() {
   renderProperties();
 }
 
-/* ===================== 5. SHORTCUTS & EXPORT ===================== */
+/* ===================== 5. SHORTCUTS & EXPORTS ===================== */
 function initKeyboardShortcuts() {
   document.addEventListener("keydown", (e) => {
     if (e.target.matches("input, textarea, [contenteditable]")) return;
@@ -411,7 +417,6 @@ function initKeyboardShortcuts() {
         (x) => x.id === editorState.selectedElementId,
       );
       const dom = getEl(`.canvas > [data-id="${el.id}"]`);
-      // ✅ FIX: 5px Step (Requirement #6)
       const step = e.shiftKey ? 10 : 5;
 
       if (e.key === "ArrowUp") el.y = Math.max(0, el.y - step);
@@ -431,36 +436,30 @@ function initKeyboardShortcuts() {
   });
 }
 
-// ✅ NEW: LAYER REORDERING LOGIC (Requirement #4)
 function moveLayer(id, direction) {
   const index = editorState.elements.findIndex((el) => el.id === id);
   if (index === -1) return;
 
   if (direction === "up" && index < editorState.elements.length - 1) {
-    // Swap with next (visually up = higher Z index)
     [editorState.elements[index], editorState.elements[index + 1]] = [
       editorState.elements[index + 1],
       editorState.elements[index],
     ];
   } else if (direction === "down" && index > 0) {
-    // Swap with prev
     [editorState.elements[index], editorState.elements[index - 1]] = [
       editorState.elements[index - 1],
       editorState.elements[index],
     ];
   }
 
-  // Re-render EVERYTHING to update Z-indices
   getEl(".canvas").innerHTML = "";
   editorState.elements.forEach((el) => renderElement(el));
 
-  // Restore Selection
   if (editorState.selectedElementId) {
     const domEl = getEl(
       `.canvas > [data-id="${editorState.selectedElementId}"]`,
     );
     if (domEl) domEl.classList.add("selected");
-    // Re-add handles
     selectElement(editorState.selectedElementId);
   }
 
@@ -473,7 +472,6 @@ function renderLayers() {
   if (!list) return;
   list.innerHTML = "";
 
-  // Render list in reverse order (Top element first)
   editorState.elements
     .slice()
     .reverse()
@@ -487,7 +485,6 @@ function renderLayers() {
       const typeLabel = el.type.charAt(0).toUpperCase() + el.type.slice(1);
       labelSpan.innerText = typeLabel;
 
-      // Container for Arrows
       const btnGroup = document.createElement("div");
       btnGroup.style.display = "flex";
       btnGroup.style.gap = "4px";
@@ -522,7 +519,6 @@ function renderLayers() {
 
       btnGroup.appendChild(btnUp);
       btnGroup.appendChild(btnDown);
-
       li.appendChild(labelSpan);
       li.appendChild(btnGroup);
 
@@ -531,7 +527,6 @@ function renderLayers() {
       if (el.id === editorState.selectedElementId) li.classList.add("active");
 
       li.addEventListener("mousedown", (e) => {
-        // Only select if not clicking buttons
         if (e.target.tagName !== "BUTTON") {
           e.stopPropagation();
           selectElement(el.id);
@@ -541,7 +536,19 @@ function renderLayers() {
     });
 }
 
-// ✅ NEW: HTML EXPORT (Requirement #8)
+// ✅ EXPORT JSON
+function exportToJSON() {
+  const dataStr = JSON.stringify(editorState.elements, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "enigma-design.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ✅ EXPORT HTML
 function exportToHTML() {
   let htmlContent = `
 <!DOCTYPE html>
@@ -580,7 +587,13 @@ function exportToHTML() {
       styles += `
                 font-size: ${el.fontSize}px; color: ${el.color}; 
                 text-align: ${el.textAlign}; font-family: ${el.fontFamily};
-                justify-content: ${el.textAlign === "center" ? "center" : el.textAlign === "right" ? "flex-end" : "flex-start"};
+                justify-content: ${
+                  element.textAlign === "center"
+                    ? "center"
+                    : element.textAlign === "right"
+                      ? "flex-end"
+                      : "flex-start"
+                };
             `;
       content = el.text;
     }
@@ -595,6 +608,26 @@ function exportToHTML() {
   a.href = URL.createObjectURL(blob);
   a.download = "design.html";
   a.click();
+}
+
+// ✅ EXPORT PNG (Needs html2canvas in index.html)
+function exportToPNG() {
+  if (!window.html2canvas) {
+    alert(
+      "html2canvas library not found! Please add it to your index.html head.",
+    );
+    return;
+  }
+  // Clear selection so handles don't show up in image
+  clearSelection();
+
+  const canvasEl = getEl(".canvas");
+  html2canvas(canvasEl).then((canvas) => {
+    const link = document.createElement("a");
+    link.download = "design.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  });
 }
 
 function attachResizeLogic(handle, id, position) {
@@ -691,9 +724,6 @@ document.addEventListener("mouseup", () => {
   activeDOMElement = null;
 });
 
-getEl("#btn-export-png").addEventListener("click", () => {
-  alert("Install html2canvas!");
-});
 ["rectangle", "ellipse", "line", "text"].forEach((tool) => {
   const btn = getEl(`[data-tool="${tool}"]`);
   if (btn) btn.addEventListener("click", () => createElement(tool));
