@@ -24,7 +24,7 @@
 
 ---
 
-## ⚡ The Philosophy (Zara Hatke)
+## ⚡ The Philosophy 
 
 Enigma is not just another drawing app. It's a statement that you don't need heavy frameworks like React or massive libraries like Fabric.js to build complex, creative tools on the web.
 
