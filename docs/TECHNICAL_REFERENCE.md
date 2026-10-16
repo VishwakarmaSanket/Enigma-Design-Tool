@@ -302,7 +302,7 @@ On startup, `loadFromLocal()` parses the stored JSON, repopulates the element ar
 - `restoreHistory()` parses the selected snapshot, replaces the array, clears and rebuilds the canvas DOM, clears selection, rebuilds layers, and saves the restored document to Local Storage.
 - The property panel has an Undo button. Redo is only accessible through the keyboard shortcut in the active UI.
 
-The implementation attempts to cap history at 50 entries by shifting the oldest snapshot when the array is longer than 50. However, it does not adjust `historyStep` when shifting, which can make the cursor inconsistent after many edits. Treat the 50-snapshot behavior as an intended limit, not a fully robust history guarantee.
+The implementation attempts to bound history near 50 entries, but checks `history.length > 50` before pushing the next snapshot. As a result, the array can reach 51 snapshots. It also does not adjust `historyStep` when shifting an old snapshot, which can make the cursor inconsistent after many edits. Treat this as a best-effort history limit rather than a strict 50-snapshot guarantee.
 
 ### 7.3 Copy and paste
 
