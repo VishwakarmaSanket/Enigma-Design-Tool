@@ -310,8 +310,10 @@ These are roadmap ideas, not implemented features in the current source.
 - **[Core engine](js/core/elements.js)** — current editor logic and interaction handlers.
 - **[SCSS entry point](styles/main.scss)** — theme and style imports.
 
-```
+---
 
 <div align="center">
   Designed & Engineered by Sanket Vishwakarma.
 </div>
+
+```
