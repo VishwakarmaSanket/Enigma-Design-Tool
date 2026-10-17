@@ -1,4 +1,4 @@
-console.log("🚀 Enigma vFinal Engine Starting...");
+console.log("🚀 Enigma V3 Engine Starting...");
 
 /* ===================== 0. INTERNAL STATE ===================== */
 const editorState = {
@@ -21,11 +21,13 @@ const generateID = () => crypto.randomUUID();
 
 /* ===================== 1. HISTORY & AUTO-SAVE ===================== */
 function saveToLocal() {
-  localStorage.setItem("enigma_v2_data", JSON.stringify(editorState.elements));
+  localStorage.setItem("enigma_v3_data", JSON.stringify(editorState.elements));
 }
 
 function loadFromLocal() {
-  const data = localStorage.getItem("enigma_v2_data");
+  const data =
+    localStorage.getItem("enigma_v3_data") ||
+    localStorage.getItem("enigma_v2_data");
   if (data) {
     editorState.elements = JSON.parse(data);
     editorState.elements.forEach((el) => renderElement(el));
@@ -115,7 +117,7 @@ function renderProperties() {
   setVal('[data-prop="height"]', Math.round(element.height));
   setVal('[data-prop="rotate"]', element.rotate || 0);
 
-  setVal('[data-prop="backgroundColor"]', element.backgroundColor || "#4a90e2");
+  setVal('[data-prop="backgroundColor"]', element.backgroundColor || "#d9cff0");
   setVal(
     '[data-prop="opacity"]',
     element.opacity !== undefined ? element.opacity : 1,
@@ -124,14 +126,14 @@ function renderProperties() {
     Math.round((element.opacity || 1) * 100) + "%";
 
   setVal('[data-prop="borderWidth"]', element.borderWidth || 0);
-  setVal('[data-prop="borderColor"]', element.borderColor || "#000000");
+  setVal('[data-prop="borderColor"]', element.borderColor || "#302d38");
 
   setVal('[data-prop="shadowBlur"]', element.shadowBlur || 0);
-  setVal('[data-prop="shadowColor"]', element.shadowColor || "#000000");
+  setVal('[data-prop="shadowColor"]', element.shadowColor || "#514d5b");
 
   if (element.type === "text") {
     setVal('[data-prop="fontSize"]', element.fontSize || 16);
-    setVal('[data-prop="color"]', element.color || "#333333");
+    setVal('[data-prop="color"]', element.color || "#302d38");
     setVal('[data-prop="textAlign"]', element.textAlign || "left");
     setVal(
       '[data-prop="fontFamily"]',
@@ -208,7 +210,7 @@ function updateElementVisuals(containerDiv, element) {
       element.type === "text" &&
       !containerDiv.classList.contains("editing")
     ) {
-      contentDiv.style.border = "1px dashed #ccc";
+      contentDiv.style.border = "1px dashed #d6d0ca";
     }
   }
 
@@ -220,7 +222,7 @@ function updateElementVisuals(containerDiv, element) {
 
   if (element.type === "text") {
     contentDiv.style.fontSize = (element.fontSize || 16) + "px";
-    contentDiv.style.color = element.color || "#333";
+    contentDiv.style.color = element.color || "#302d38";
     contentDiv.style.textAlign = element.textAlign || "left";
     contentDiv.style.fontFamily = element.fontFamily || "Inter, sans-serif";
     contentDiv.style.display = "flex";
@@ -272,7 +274,7 @@ function renderElement(element) {
       content.focus();
       container.classList.add("editing");
       content.style.cursor = "text";
-      content.style.border = "1px solid #4a90e2";
+      content.style.border = "1px solid #8b82b4";
     });
     content.addEventListener("blur", () => {
       content.contentEditable = false;
@@ -300,9 +302,9 @@ function renderElement(element) {
 /* ===================== 4. CREATION & LOGIC ===================== */
 function createElement(type) {
   const defaults = {
-    rectangle: { w: 100, h: 100, bg: "#4a90e2" },
-    ellipse: { w: 100, h: 100, bg: "#ea758b" },
-    line: { w: 150, h: 5, bg: "#333" },
+    rectangle: { w: 100, h: 100, bg: "#d9cff0" },
+    ellipse: { w: 100, h: 100, bg: "#e3edca" },
+    line: { w: 150, h: 5, bg: "#302d38" },
     text: { w: 200, h: 40, bg: "transparent" },
   };
   const d = defaults[type];
@@ -318,12 +320,12 @@ function createElement(type) {
     rotate: 0,
     opacity: 1,
     borderWidth: 0,
-    borderColor: "#000000",
+    borderColor: "#302d38",
     shadowBlur: 0,
-    shadowColor: "#000000",
+    shadowColor: "#514d5b",
     text: type === "text" ? "Double click" : "",
     fontSize: 16,
-    color: "#333333",
+    color: "#302d38",
     textAlign: "left",
     fontFamily: "Inter, sans-serif",
   };
@@ -471,6 +473,11 @@ function renderLayers() {
   const list = getEl(".layers-list");
   if (!list) return;
   list.innerHTML = "";
+  const count = getEl(".layer-count");
+  const emptyMessage = getEl(".layers-empty");
+  if (count) count.innerText = editorState.elements.length;
+  if (emptyMessage)
+    emptyMessage.classList.toggle("hidden", editorState.elements.length > 0);
 
   editorState.elements
     .slice()
@@ -483,7 +490,10 @@ function renderLayers() {
 
       const labelSpan = document.createElement("span");
       const typeLabel = el.type.charAt(0).toUpperCase() + el.type.slice(1);
-      labelSpan.innerText = typeLabel;
+      const typeIndex =
+        editorState.elements.filter((item) => item.type === el.type).indexOf(el) +
+        1;
+      labelSpan.innerText = `${typeLabel} ${typeIndex}`;
 
       const btnGroup = document.createElement("div");
       btnGroup.style.display = "flex";
@@ -495,9 +505,9 @@ function renderLayers() {
       btnUp.style.padding = "2px 6px";
       btnUp.style.fontSize = "10px";
       btnUp.style.cursor = "pointer";
-      btnUp.style.background = "rgba(255,255,255,0.1)";
+      btnUp.style.background = "transparent";
       btnUp.style.border = "none";
-      btnUp.style.color = "white";
+      btnUp.style.color = "currentColor";
       btnUp.onclick = (e) => {
         e.stopPropagation();
         moveLayer(el.id, "up");
@@ -509,9 +519,9 @@ function renderLayers() {
       btnDown.style.padding = "2px 6px";
       btnDown.style.fontSize = "10px";
       btnDown.style.cursor = "pointer";
-      btnDown.style.background = "rgba(255,255,255,0.1)";
+      btnDown.style.background = "transparent";
       btnDown.style.border = "none";
-      btnDown.style.color = "white";
+      btnDown.style.color = "currentColor";
       btnDown.onclick = (e) => {
         e.stopPropagation();
         moveLayer(el.id, "down");
@@ -588,9 +598,9 @@ function exportToHTML() {
                 font-size: ${el.fontSize}px; color: ${el.color}; 
                 text-align: ${el.textAlign}; font-family: ${el.fontFamily};
                 justify-content: ${
-                  element.textAlign === "center"
+                  el.textAlign === "center"
                     ? "center"
-                    : element.textAlign === "right"
+                    : el.textAlign === "right"
                       ? "flex-end"
                       : "flex-start"
                 };
@@ -741,4 +751,4 @@ initKeyboardShortcuts();
 loadFromLocal();
 saveHistory();
 
-console.log("✅ Enigma vFinal Ready!");
+console.log("✅ Enigma V3 Ready!");

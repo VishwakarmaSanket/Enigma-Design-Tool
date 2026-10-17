@@ -1,118 +1,68 @@
-<div align="center">
+# Enigma V3
 
-  <a href="https://vishwakarmasanket.github.io/Enigma-Design-Tool/">
-    <img src="favicon.svg" width="120" height="120" alt="Enigma Logo">
-  </a>
+Enigma is a lightweight, browser-based composition tool built with vanilla JavaScript. V3 refreshes the editor with a Figma-inspired editorial interface: a calm monochrome workspace, purposeful pastel accents, rounded controls, hairline boundaries, and a clearer panel hierarchy.
 
-  <h1>E N I G M A</h1>
-  <p><strong>The lightweight design tool crafted precisely with Vanilla JavaScript.</strong></p>
-  <p>Zero Dependencies. 100% Performance. Now with V2 Powers.</p>
+![Enigma mark](favicon.svg)
 
-  <p>
-    <a href="https://vishwakarmasanket.github.io/Enigma-Design-Tool/">
-      <img src="https://img.shields.io/badge/🚀_Launch-Live_Demo-007aff?style=for-the-badge&logo=microsoftedge&logoColor=white" alt="Live Demo">
-    </a>
-  </p>
+## V3 highlights
 
-  <p>
-    <img src="https://img.shields.io/badge/Built_With-Vanilla_JS-yellow?style=flat-square&logo=javascript">
-    <img src="https://img.shields.io/badge/Style-SCSS_BEM-pink?style=flat-square&logo=sass">
-    <img src="https://img.shields.io/badge/Dependencies-🚫_None-critical?style=flat-square">
-    <img src="https://img.shields.io/badge/Version-2.0_Major_Update-success?style=flat-square">
-  </p>
-</div>
+- Rebuilt the slate-and-blue V2 chrome as a white, ink, and soft-canvas editor system.
+- Added the V3 pastel palette to new shape defaults and selection feedback: lilac, lime, cream, mint, and pink stay deliberate rather than decorative.
+- Made controls consistently circular or pill-shaped, with mono taxonomy labels and restrained borders instead of heavy shadows.
+- Improved the layers panel with a live count and useful empty state.
+- Migrates existing V2 saved work into the new `enigma_v3_data` local-storage key on first save.
+- Kept the original canvas interactions, local auto-save, keyboard workflow, and JSON/HTML/PNG exports intact.
 
----
+## Project structure
 
-## ⚡ The Philosophy 
+```text
+.
+├── index.html                  # App shell and accessible control markup
+├── js/
+│   └── core/elements.js         # Editor state, rendering, interaction and export engine
+├── styles/
+│   ├── base/                   # Design tokens and global reset
+│   ├── components/             # Layers and properties panel components
+│   ├── layout/                 # App, canvas, sidebars and toolbar layout
+│   ├── main.scss               # Sass entry point
+│   └── main.css                # Compiled stylesheet loaded by index.html
+├── fonts/                      # Local font assets
+├── DESIGN-figma.md             # Source design analysis used for V3
+└── docs/
+    └── V3-DESIGN-SYSTEM.md     # Implemented V3 design decisions
+```
 
-Enigma is not just another drawing app. It's a statement that you don't need heavy frameworks like React or massive libraries like Fabric.js to build complex, creative tools on the web.
+## Run locally
 
-We built a **custom rendering engine** based on pure DOM manipulation and modern JavaScript state management. The result? A snappy, bloat-free vector design experience that runs directly in the browser.
+Open [index.html](index.html) in a modern browser. A local server such as VS Code Live Server is recommended so browser module and export behaviour matches production use.
 
-Think of it as the essence of Figma, distilled down to its purest web fundamentals.
+To rebuild the stylesheet after editing Sass:
 
----
+```powershell
+sass styles/main.scss styles/main.css --no-source-map
+```
 
-## 🚀 What's New in V2.0
-
-We just pushed a massive update to the core engine:
-* **🎨 Advanced Styling:** Control **Opacity**, **Borders**, **Drop Shadows**, and **Fill Colors**.
-* **⚡ Productivity:** Full **Undo/Redo** history system and **Copy/Paste** support.
-* **🏗️ Layer Management:** Reorder elements visually (Bring Forward / Send Backward).
-* **💾 Auto-Save:** Your work is automatically saved to LocalStorage. Never lose a pixel.
-
----
-
-## 🎯 Key Features
-
-* **📐 Vector Primitives:** Draw Rectangles, Ellipses, and Lines with pixel-perfect precision.
-* **🅰️ Pro Typography Engine:** Support for Google Fonts (Inter, Roboto, Playfair, etc.), Alignment, and dynamic resizing.
-* **🎛️ Direct Manipulation:** Drag to move, pull corner handles to resize. Constrained strictly to the canvas.
-* **🔄 Reactive Properties Panel:** Two-way data binding. Change the shape, the sidebar updates. Change the sidebar, the shape updates instantly.
-* **🌐 Triple Export Engine:**
-    * **JSON:** Save raw data to edit later.
-    * **PNG:** High-quality image render.
-    * **HTML:** Export a standalone, code-ready HTML file of your design.
-
----
-
-## ⌨️ Pro Workflow (Shortcuts)
-
-Design faster with industry-standard keyboard shortcuts.
+## Keyboard workflow
 
 | Key | Action |
-| :--- | :--- |
-| `Arrow Keys` | Nudge selection **5px** |
-| `Shift + Arrow` | Fast nudge (**10px**) |
-| `Ctrl + Z` | **Undo** last action |
-| `Ctrl + Y` | **Redo** action |
-| `Ctrl + C` | **Copy** selection |
-| `Ctrl + V` | **Paste** selection |
-| `Delete` / `Backspace` | Remove element |
-| `Escape` | Deselect all |
-| `Double Click (Text)`| Enter text editing mode |
+| --- | --- |
+| Arrow keys | Nudge selected element by 5px |
+| Shift + Arrow keys | Nudge selected element by 10px |
+| Ctrl/Cmd + Z | Undo |
+| Ctrl/Cmd + Y | Redo |
+| Ctrl/Cmd + C / V | Copy / paste selection |
+| Delete / Backspace | Delete selection |
+| Escape | Clear selection |
+| Double-click text | Edit text |
 
----
+## Design direction
 
-## 🛠️ Under the Hood
+The implementation follows the `DESIGN-figma.md` system: Inter is the practical figmaSans fallback and JetBrains Mono is used for editorial labels. The primary visual language is black ink on white, supported by the documented pastel blocks. See [the V3 design system](docs/V3-DESIGN-SYSTEM.md) for tokens and implementation notes.
 
-This project is a showcase of modern, native web technologies:
+## Roadmap
 
-* **Core:** ES6+ JavaScript Modules (No bundlers required for dev).
-* **State Management:** A centralized, reactive store (`editorState`) that manages history, selection, and clipboard.
-* **Rendering:** **DOM-based**. Unlike traditional canvas apps, Enigma uses standard HTML `<div>` elements for rendering. This ensures crisp text, native accessibility, and easier debugging.
-* **Styling:** SCSS with BEM naming convention for scalable CSS.
+- Infinite canvas with pan and zoom
+- Multi-select and drag selection
+- Grouping and nested layer support
 
----
-
-## 🚀 Quick Start
-
-Want to run this locally? It's absurdly simple because there's no build step.
-
-1.  **Clone it:**
-    ```bash
-    git clone [https://github.com/VishwakarmaSanket/Enigma-Design-Tool.git](https://github.com/VishwakarmaSanket/Enigma-Design-Tool.git)
-    ```
-
-2.  **Run it:**
-    Simply open `index.html` in your browser. That's it.
-    *(For the best experience, use a local server like VS Code's "Live Server").*
-
----
-
-## 🔮 Future Roadmap
-
-We are just getting started.
-
-* [x] ~~History API (Undo/Redo)~~ (Completed in v2.0)
-* [x] ~~Layer Reordering~~ (Completed in v2.0)
-* [ ] **Infinite Canvas:** Pan and Zoom controls.
-* [ ] **Multi-Select:** Shift+Click and Drag-to-select bounding box.
-* [ ] **Grouping:** Combine elements into a single group container.
-
----
-
-<div align="center">
-  Designed & Engineered by Sanket Vishwakarma.
-</div>
+Designed and engineered by Sanket Vishwakarma.

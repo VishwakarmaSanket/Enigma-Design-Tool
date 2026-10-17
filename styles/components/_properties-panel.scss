@@ -1,245 +1,32 @@
-/* =========================================
-   COMPONENT: PROPERTIES PANEL
-   The right-side form for editing values
-   ========================================= */
-
-.properties-panel {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: var(--bg-panel);
-    font-family: 'Inter', sans-serif;
-
-    /* 1. Hide scrollbars on the main container */
-    overflow: hidden;
-
-    /* --- HEADER (Fixed) --- */
-    .panel-header {
-        padding: 16px;
-        border-bottom: 1px solid var(--border-color);
-        flex-shrink: 0;
-        background: var(--bg-panel);
-        z-index: 10;
-
-        h3 {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--text-muted);
-            margin: 0;
-        }
+.properties-panel { display: flex; width: 100%; height: 100%; flex-direction: column; overflow: hidden; background: var(--surface-raised);
+  .panel-header { display: flex; min-height: 56px; align-items: center; justify-content: space-between; padding: 18px 18px 14px; border-bottom: 1px solid var(--hairline); }
+  .panel-status { width: 8px; height: 8px; border-radius: 50%; background: var(--block-lime); border: 1px solid var(--ink); }
+  .empty-state { margin: 16px; padding: 20px 16px; border-radius: 8px; background: var(--surface-soft); color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+  .properties-form { display: flex; flex: 1; flex-direction: column; gap: 0; padding: 4px 18px 24px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--hairline) transparent;
+    .section-label { display: flex; align-items: center; gap: 8px; margin: 22px 0 12px; color: var(--ink-soft); font: 700 10px/1.3 "JetBrains Mono", monospace; letter-spacing: .1em; text-transform: uppercase;
+      &::after { height: 1px; flex: 1; background: var(--hairline); content: ""; }
     }
-
-    /* --- EMPTY STATE --- */
-    .empty-state {
-        padding: 40px 20px;
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 13px;
-        font-style: italic;
+    .property-label { display: block; margin: 14px 0 7px; color: var(--text-muted); font: 700 9px/1.3 "JetBrains Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+    .separator { min-height: 1px; margin: 18px 0 0; background: var(--hairline); }
+    .row-group { display: grid; width: 100%; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .prop-row { display: flex; align-items: center; justify-content: space-between; .property-label { margin: 0; } }
+    .input-wrapper { position: relative; display: flex; width: 100%; height: 38px; align-items: center;
+      .icon-label { position: absolute; z-index: 1; left: 10px; color: var(--text-muted); font: 700 10px/1 "JetBrains Mono", monospace; pointer-events: none; }
+      input[type="number"], input[type="text"], select { width: 100%; height: 100%; padding: 0 8px 0 27px; border: 1px solid var(--hairline); border-radius: 8px; outline: none; background: var(--canvas); color: var(--ink); font-size: 13px; font-weight: 600; &:focus { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(217, 207, 240, .65); } }
+      select { padding-left: 10px; cursor: pointer; }
+      input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     }
-
-    /* --- FORM LAYOUT (Scrollable but Invisible Bar) --- */
-    .properties-form {
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 0px;
-
-        flex: 1;
-
-        /* 2. Enable Scrolling Logic */
-        overflow-y: auto;
-        overflow-x: hidden;
-        /* Force kill horizontal scroll */
-        padding-bottom: 40px;
-
-        /* 3. HIDE SCROLLBARS (Visual Only) */
-
-        /* Firefox */
-        scrollbar-width: none;
-
-        /* IE / Edge Legacy */
-        -ms-overflow-style: none;
-
-        /* Chrome / Safari / Edge / Opera */
-        &::-webkit-scrollbar {
-            display: none;
-            width: 0px;
-            background: transparent;
-        }
-
-        /* --- TYPOGRAPHY --- */
-        .section-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-top: 12px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            opacity: 0.9;
-        }
-
-        .separator {
-            min-height: 1px;
-            background: var(--border-color);
-            margin: 12px 0;
-            width: 100%;
-            opacity: 0.5;
-        }
-
-        /* --- GRID SYSTEM --- */
-        .row-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-            width: 100%;
-            /* Ensure it fits container */
-            box-sizing: border-box;
-        }
-
-        /* --- INPUTS --- */
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            height: 32px;
-
-            .icon-label {
-                position: absolute;
-                left: 10px;
-                font-size: 10px;
-                color: var(--text-muted);
-                font-weight: 700;
-                pointer-events: none;
-                z-index: 2;
-                text-transform: uppercase;
-            }
-
-            input[type="number"],
-            input[type="text"],
-            select {
-                width: 100%;
-                height: 100%;
-                padding: 0 8px 0 28px;
-                background: rgba(0, 0, 0, 0.2);
-                border: 1px solid var(--border-color);
-                border-radius: 6px;
-                font-size: 13px;
-                color: var(--text-main);
-                font-weight: 500;
-                outline: none;
-                transition: border 0.2s;
-                box-sizing: border-box;
-                /* Prevents padding from causing overflow */
-
-                &:focus {
-                    border-color: var(--primary);
-                    background: rgba(0, 0, 0, 0.3);
-                }
-            }
-
-            input[type=number]::-webkit-inner-spin-button,
-            input[type=number]::-webkit-outer-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
-        }
-
-        select {
-            padding-left: 10px !important;
-            cursor: pointer;
-            appearance: none;
-            background-image: url('data:image/svg+xml;utf8,<svg fill="%2394a3b8" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-            background-repeat: no-repeat;
-            background-position: right 4px center;
-        }
-
-        /* --- COLOR PICKER --- */
-        .color-input-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 4px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            height: 32px;
-            width: 100%;
-            box-sizing: border-box;
-
-            &.full-width {
-                margin-bottom: 8px;
-            }
-
-            .color-value-text {
-                font-size: 11px;
-                color: var(--text-main);
-                font-family: monospace;
-                flex: 1;
-                padding-left: 8px;
-            }
-
-            input[type="color"] {
-                -webkit-appearance: none;
-                border: none;
-                background: none;
-                width: 24px;
-                height: 22px;
-                cursor: pointer;
-                padding: 0;
-                border-radius: 4px;
-
-                &::-webkit-color-swatch-wrapper {
-                    padding: 0;
-                }
-
-                &::-webkit-color-swatch {
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-radius: 3px;
-                }
-            }
-        }
-
-        /* --- BUTTONS --- */
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-
-            button {
-                height: 36px;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 600;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                border: 1px solid transparent;
-            }
-
-            .btn-primary {
-                background-color: var(--primary);
-                color: white;
-            }
-
-            .btn-secondary {
-                background-color: transparent;
-                color: var(--text-main);
-                border-color: var(--border-color);
-            }
-
-            button:hover {
-                opacity: 0.9;
-            }
-        }
+    input[type="range"] { accent-color: var(--ink); }
+    .color-input-wrapper { display: flex; width: 100%; height: 38px; align-items: center; gap: 8px; padding: 4px; border: 1px solid var(--hairline); border-radius: 8px; background: var(--canvas); cursor: pointer; box-sizing: border-box;
+      &.full-width { margin-bottom: 8px; }
+      .color-value-text { flex: 1; padding-left: 6px; color: var(--ink); font: 11px/1 "JetBrains Mono", monospace; }
+      input[type="color"] { width: 28px; height: 28px; padding: 0; border: 1px solid var(--hairline); border-radius: 6px; background: transparent; cursor: pointer; &::-webkit-color-swatch-wrapper { padding: 2px; } &::-webkit-color-swatch { border: 0; border-radius: 3px; } }
     }
+    .action-buttons { display: flex; flex-direction: column; gap: 7px; margin-top: 2px; padding: 10px; border: 1px solid var(--hairline); border-radius: 14px; background: var(--surface-soft);
+      button { display: flex; width: 100%; min-height: 42px; align-items: center; justify-content: flex-start; gap: 8px; padding: 0 14px; border: 1px solid var(--hairline); border-radius: 10px; background: var(--canvas); color: var(--ink); cursor: pointer; font-size: 12px; font-weight: 700; transition: transform .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+        svg { color: var(--ink-soft); } &:hover { border-color: var(--focus); background: var(--block-cream); } &:active { transform: scale(.98); }
+      }
+      .btn-primary { justify-content: center; margin-top: 3px; border-color: var(--ink); border-radius: 999px; background: var(--ink); color: var(--canvas); svg { color: currentColor; } &:hover { background: var(--primary-hover); } }
+    }
+  }
 }

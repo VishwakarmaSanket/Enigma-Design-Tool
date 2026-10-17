@@ -1,58 +1,8 @@
+@use "base/variables";
+@use "base/reset";
 @use "layout/app";
 @use "layout/sidebar";
 @use "layout/canvas";
 @use "layout/toolbar";
 @use "components/layers-panel";
 @use "components/properties-panel";
-
-/* =========================================
-   THEME: MODERN SLATE (The Middle Path)
-   Comfortable dark UI with high clarity.
-   ========================================= */
-
-:root {
-    // --- 1. Main Backgrounds (Soft Dark Greys) ---
-    // The main background behind the canvas (The "Desk")
-    --bg-app: #1e293b;
-    /* Slate-900: Dark but blue-tinted */
-
-    // The Sidebars & Toolbar (Slightly lighter than app bg)
-    --bg-panel: #334155;
-    /* Slate-700: Soft grey */
-
-    // The Canvas itself (The "Paper")
-    // Keeping this white/off-white ensures colors in the design are accurate.
-    --bg-canvas: #ffffff;
-
-    // --- 2. Typography ---
-    // Text on Dark Panels
-    --text-main: #f1f5f9;
-    /* Slate-100: Soft White (Not harsh white) */
-    --text-muted: #94a3b8;
-    /* Slate-400: Dimmed text for labels */
-
-    // Text inside the Canvas (Needs to be dark if canvas is white)
-    --text-canvas: #1e293b;
-
-    // --- 3. Borders & Separators ---
-    // Subtle borders for the dark theme
-    --border-color: #475569;
-    /* Slate-600 */
-
-    // --- 4. Accent Color (Enigma Blue) ---
-    // We make it slightly brighter to pop against the dark UI
-    --primary: #3b82f6;
-    /* Bright Blue */
-    --primary-hover: #2563eb;
-    /* Darker Blue */
-
-    // Selection/Active States
-    --active-item-bg: rgba(59, 130, 246, 0.2);
-    /* Blue with transparency */
-
-    // --- 5. Dimensions (Unchanged) ---
-    --header-height: 50px;
-    --sidebar-width: 240px;
-    --layers-panel-width: 200px;
-
-}

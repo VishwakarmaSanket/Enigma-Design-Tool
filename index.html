@@ -4,12 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enigma</title>
+    <title>Enigma — V3</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="shortcut icon" href="./favicon.png" type="image/x-icon">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;700&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 
@@ -17,17 +15,21 @@
     <div class="app">
         <aside class="sidebar sidebar-left">
             <div class="layers-panel">
-                <h3>Layers</h3>
+                <div class="panel-title">
+                    <p class="eyebrow">Layers</p>
+                    <span class="layer-count" aria-label="Number of layers">0</span>
+                </div>
                 <ul class="layers-list">
                 </ul>
+                <p class="layers-empty">Create a shape or text layer to start building your composition.</p>
             </div>
         </aside>
 
         <main class="canvas-wrapper" aria-label="Design canvas">
             <div class="app-header">
-                <img src="favicon.svg" alt="Logo">
-                <span>Enigma</span>
-                <span class="file-tag">v2.0</span>
+                <img src="favicon.svg" alt="Enigma logo">
+                <span class="app-name">Enigma</span>
+                <span class="file-tag">V3.0</span>
             </div>
 
             <div class="canvas"></div>
@@ -71,15 +73,17 @@
                     <h3>Text</h3>
                 </div>
             </div>
+            <p class="canvas-meta">800 × 500 · LOCAL FILE</p>
         </main>
 
         <aside class="sidebar sidebar-right">
             <div class="properties-panel">
                 <div class="panel-header">
-                    <h3>Properties</h3>
+                    <p class="eyebrow">Properties</p>
+                    <span class="panel-status" aria-hidden="true"></span>
                 </div>
                 <div class="empty-state">
-                    <p>Select an element to edit</p>
+                    <p>Select an element to edit its position, appearance, and type settings.</p>
                 </div>
 
                 <div class="properties-form hidden">
@@ -108,7 +112,7 @@
                     <div class="separator"></div>
 
                     <div class="prop-row">
-                        <div class="section-label">Rotation</div>
+                        <div class="property-label">Rotation</div>
                         <div class="input-wrapper" style="width: 80px;">
                             <span class="icon-label">°</span>
                             <input type="number" data-prop="rotate" min="0" max="360" value="0">
@@ -143,9 +147,9 @@
                             </div>
                         </div>
 
-                        <div class="section-label" style="margin-top:10px; font-size:10px; color:#64748b;">COLOR</div>
+                        <div class="property-label">Color</div>
                         <div class="color-input-wrapper full-width">
-                            <span class="color-value-text">#333333</span>
+                            <span class="color-value-text">#302D38</span>
                             <input type="color" data-prop="color">
                         </div>
                     </div>
@@ -155,7 +159,7 @@
                     <div class="section-label">Appearance</div>
 
                     <div class="row-group" style="align-items: center; margin-bottom: 8px;">
-                        <label style="font-size: 11px; color: #94a3b8; font-weight: 600;">OPACITY</label>
+                        <label class="property-label">Opacity</label>
                         <div style="display: flex; gap: 8px; align-items: center; flex: 1;">
                             <input type="range" data-prop="opacity" min="0" max="1" step="0.1"
                                 style="flex:1; height: 4px;">
@@ -164,33 +168,31 @@
                         </div>
                     </div>
 
-                    <div class="section-label" style="font-weight: 500; font-size: 10px; color: #64748b;">FILL</div>
+                    <div class="property-label">Fill</div>
                     <div class="color-input-wrapper full-width">
-                        <span class="color-value-text">#4A90E2</span>
+                        <span class="color-value-text">#D9CFF0</span>
                         <input type="color" data-prop="backgroundColor">
                     </div>
 
-                    <div class="section-label"
-                        style="font-weight: 500; font-size: 10px; color: #64748b; margin-top: 10px;">BORDER</div>
+                    <div class="property-label">Border</div>
                     <div class="row-group">
                         <div class="input-wrapper">
                             <span class="icon-label">W</span>
                             <input type="number" data-prop="borderWidth" placeholder="0" min="0">
                         </div>
                         <div class="color-input-wrapper">
-                            <input type="color" data-prop="borderColor" value="#000000">
+                            <input type="color" data-prop="borderColor" value="#302D38">
                         </div>
                     </div>
 
-                    <div class="section-label"
-                        style="font-weight: 500; font-size: 10px; color: #64748b; margin-top: 10px;">SHADOW</div>
+                    <div class="property-label">Shadow</div>
                     <div class="row-group">
                         <div class="input-wrapper">
                             <span class="icon-label">B</span>
                             <input type="number" data-prop="shadowBlur" placeholder="0" min="0">
                         </div>
                         <div class="color-input-wrapper">
-                            <input type="color" data-prop="shadowColor" value="#000000">
+                            <input type="color" data-prop="shadowColor" value="#514D5B">
                         </div>
                     </div>
 

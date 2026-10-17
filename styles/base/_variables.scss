@@ -1,0 +1,40 @@
+@font-face {
+  font-family: Inter;
+  src: url("../fonts/Inter_24pt-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  /* Enigma V3 — Figma-inspired editorial system */
+  --ink: #302d38;
+  --ink-soft: #514d5b;
+  --canvas: #fffefa;
+  --surface-soft: #f5f2ed;
+  --surface-raised: #fcfaf6;
+  --hairline: #e4ded6;
+  --hairline-soft: #eeeae4;
+  --block-lime: #e3edca;
+  --block-lilac: #d9cff0;
+  --block-cream: #f6eedf;
+  --block-pink: #f1dde0;
+  --block-mint: #d7e9d9;
+  --block-navy: #403c59;
+  --accent-magenta: #d95c8a;
+  --success: #4c9c67;
+  --focus: #8b82b4;
+  --workspace-dot: #d8d3cd;
+  --shadow-soft: 0 8px 24px rgba(48, 45, 56, .06);
+
+  --bg-app: var(--surface-soft);
+  --bg-panel: var(--canvas);
+  --bg-canvas: var(--canvas);
+  --text-main: var(--ink);
+  --text-muted: #77727d;
+  --text-canvas: var(--ink);
+  --border-color: var(--hairline);
+  --primary: var(--ink);
+  --primary-hover: #454150;
+  --active-item-bg: var(--block-lime);
+  --header-height: 56px;
+  --sidebar-width: 264px;
+}

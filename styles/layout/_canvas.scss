@@ -1,169 +1,26 @@
-/* =========================================
-   LAYOUT: CANVAS
-   The main drawing area and element interaction
-   ========================================= */
-/* ... (Existing canvas styles) ... */
-
-/* =========================================
-   COMPONENT: APP HEADER (Floating)
-   Top-Center Branding
-   ========================================= */
-.app-header {
-    position: absolute;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 16px;
-
-    /* Matches Toolbar Style */
-    background: var(--bg-panel);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-
-    /* Logo Image */
-    img {
-        width: 40px;
-        height: 40px;
-        display: block;
-        border-radius: 4px;
-    }
-
-    /* App Name */
-    span {
-        font-weight: 700;
-        font-size: 16px;
-        color: var(--text-main);
-        letter-spacing: -0.3px;
-    }
-
-    /* Optional: File Name Tag (lighter text) */
-    .file-tag {
-        font-weight: 400;
-        color: var(--text-muted);
-        padding-left: 8px;
-        border-left: 1px solid var(--border-color);
-    }
-}
-
-
 .canvas-wrapper {
-    flex: 1;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-app);
-    position: relative;
-
-    /* Grid Pattern Background */
-    background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
-    background-size: 20px 20px;
-
-    /* The White "Paper" */
-    .canvas {
-        position: relative;
-        width: 800px;
-        height: 500px;
-        background: var(--bg-canvas);
-        border: 1px solid #ccc;
-
-        /* Pro Drop Shadow */
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        border-radius: 4px;
-
-        /* Ensure handles hanging outside are visible */
-        overflow: visible;
-
-        /* ================= SHAPES ================= */
-        >div {
-            position: absolute;
-            box-sizing: border-box;
-            cursor: grab;
-            z-index: 10;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: visible !important;
-
-            &:active {
-                cursor: grabbing;
-            }
-
-            /* ================= SELECTED STATE ================= */
-            &.selected {
-                z-index: 20;
-                /* Pink/Reddish Dashed Selection Outline */
-                outline: 2px dashed #ea758b;
-                outline-offset: 4px;
-                box-shadow: 0 0 0 2px rgba(234, 117, 139, 0.15);
-
-                /* ================= RESIZE HANDLES (High Vis) ================= */
-                .resize-handle {
-                    /* 1. Visual Style */
-                    width: 14px;
-                    height: 14px;
-                    background-color: #007aff;
-                    /* Solid Blue */
-                    border: 2px solid #ffffff;
-                    /* Thick White Border */
-                    border-radius: 50%;
-                    /* Circle */
-
-                    /* Strong Shadow for "Lift" effect */
-                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-
-                    position: absolute;
-                    z-index: 100;
-                    /* Highest layer */
-                    pointer-events: auto;
-                    box-sizing: border-box;
-
-                    /* 2. INVISIBLE HIT AREA (Magic UX Fix) */
-                    /* Creates a larger click zone around the small visual handle */
-                    &::after {
-                        content: "";
-                        position: absolute;
-                        top: -10px;
-                        left: -10px;
-                        right: -10px;
-                        bottom: -10px;
-                        border-radius: 50%;
-                    }
-                }
-
-                /* 3. Positioning (Centered on Corner) */
-                /* Offset = -7px (half of 14px width) to center it */
-                .resize-handle.top-left {
-                    top: -7px;
-                    left: -7px;
-                    cursor: nwse-resize;
-                }
-
-                .resize-handle.top-right {
-                    top: -7px;
-                    right: -7px;
-                    cursor: nesw-resize;
-                }
-
-                .resize-handle.bottom-left {
-                    bottom: -7px;
-                    left: -7px;
-                    cursor: nesw-resize;
-                }
-
-                .resize-handle.bottom-right {
-                    bottom: -7px;
-                    right: -7px;
-                    cursor: nwse-resize;
-                }
-            }
+  position: relative; display: flex; flex: 1; min-width: 0; align-items: center; justify-content: center; overflow: hidden;
+  background-color: var(--surface-soft); background-image: radial-gradient(var(--workspace-dot) 1px, transparent 1px); background-size: 18px 18px;
+  .canvas {
+    position: relative; width: min(800px, calc(100% - 96px)); aspect-ratio: 8 / 5; height: auto; background: var(--canvas); border: 1px solid var(--hairline); box-shadow: var(--shadow-soft); overflow: visible;
+    > div { position: absolute; display: flex; align-items: center; justify-content: center; z-index: 10; overflow: visible !important; user-select: none; cursor: grab;
+      &:active { cursor: grabbing; }
+      &.selected { z-index: 20; outline: 2px solid var(--focus); outline-offset: 3px; box-shadow: 0 0 0 4px rgba(139, 130, 180, .12);
+        .resize-handle { position: absolute; z-index: 100; width: 10px; height: 10px; border: 1px solid var(--focus); border-radius: 50%; background: var(--canvas); box-sizing: border-box;
+          &::after { content: ""; position: absolute; inset: -8px; }
         }
+        .resize-handle.top-left { top: -5px; left: -5px; cursor: nwse-resize; }
+        .resize-handle.top-right { top: -5px; right: -5px; cursor: nesw-resize; }
+        .resize-handle.bottom-left { bottom: -5px; left: -5px; cursor: nesw-resize; }
+        .resize-handle.bottom-right { right: -5px; bottom: -5px; cursor: nwse-resize; }
+      }
     }
+  }
 }
+
+.app-header { position: absolute; top: 20px; left: 24px; z-index: 100; display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 15px 0 8px; border: 1px solid var(--hairline); border-radius: 999px; background: var(--surface-raised); box-shadow: var(--shadow-soft);
+  img { width: 28px; height: 28px; border-radius: 50%; }
+  .app-name { font-size: 15px; font-weight: 700; letter-spacing: -.03em; }
+  .file-tag { padding-left: 12px; border-left: 1px solid var(--hairline); color: var(--text-muted); font: 10px/1.3 "JetBrains Mono", monospace; letter-spacing: .08em; }
+}
+.canvas-meta { position: absolute; right: 24px; bottom: 22px; margin: 0; padding: 6px 9px; border-radius: 999px; background: rgba(255, 254, 250, .78); color: var(--text-muted); font: 10px/1.3 "JetBrains Mono", monospace; letter-spacing: .08em; }
